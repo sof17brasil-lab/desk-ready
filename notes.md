@@ -203,6 +203,45 @@ even spread across city-weeks, the minimum charge applying at all (it only binds
 and the 10% weekly threshold being a reader choice. It uses no Uber Freight figure. **Sofia can
 overrule this framing; the ledger value is unaffected either way.**
 
+## Design pass 2 (2026-10-14)
+
+**Display face.** Barlow Condensed 600/700, chosen from the ui-ux-pro-max typography data
+(top match for "condensed industrial display with a sans body"). Used only for the opening title,
+the post-truck statement, the winter hero title, and the two uppercase brief headings. Inter still
+carries everything else, so the two faces never compete.
+
+**Opening sequence.** One pinned screen, three beats: plain white title, the truck crossing it
+left to right, then "SEE WHY CARRIERS SAY NO" fading up in its place. Under reduced motion all
+three are simply present as a static page.
+
+**78% rewritten for a non-expert.** "78 of every 100 loads were accepted by the first carrier
+asked (August 2026)", beside a 100-square grid with 78 filled and squares 91-94 outlined as the
+prior-three-years band. A bar made you convert a length into a count; squares already are the
+count.
+
+**Horizontal reveal clipping — the real cause.** Three things, all fixed:
+1. the pin started at `top top`, which parked the cards behind the sticky nav. It now starts at
+   the nav's measured bottom edge, and the viewport is `calc(100svh - navHeight)`;
+2. the viewport used `overflow: hidden` on both axes, which cropped cards while their reveal
+   animation was still running. It is now `overflow-x: clip` with `overflow-y: visible`;
+3. cards had no height ceiling. They are now `max-h-full`, vertically centred, with the image
+   capped at `min(62vh, 34rem)`.
+
+**Emails moved into a dialog.** They were clipped inside the cards at every width. Radix dialog,
+own scroll area, Copy email, Esc to close. Radix locks body scroll while open, so Lenis is paused
+for the duration through a `window.__lenis` handle — without that the page drifts behind the
+overlay and jumps on close.
+
+**Carousel.** Built on the supplied Embla component. Removed from it: the Cloudinary company
+logos, the seven invented testimonials with fake names and roles, `next/image` with remote URLs,
+the instruction to fill images from Unsplash, the inline SVGs (now lucide-react), the
+`text-gray-900`/`from-background` colours, and `hidden md:block` on the arrows — the brief asks
+for arrows on phones too. Kept: the Embla context pattern, arrow-key handling, and the
+canScrollPrev/Next disabled states.
+
+**p9 appears once on the winter page.** It now carries the hero, so the third "rule on the drum"
+card uses p7-cold-snap-street instead.
+
 ## Open questions
 - Ask Eden: does the Masterbuilders team plan winter protect-from-freeze loads, and how is it decided today?
 - Which destination cities matter most for that account? Swap the city list if Eden shares anything.

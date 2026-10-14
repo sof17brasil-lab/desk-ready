@@ -1,16 +1,16 @@
 metric_id,sql_value,pandas_value,abs_diff,value_match,sql_n_stations,pandas_n_stations,n_stations_match,match,basis,computed_at
-H10_station_days_then_window,21182.0,21182.0,0.0,True,14.0,14.0,True,True,quality-checked winter days in the then window,2026-10-14T15:02Z
-H11_cities_any_day_below_10f,14.0,14.0,0.0,True,15.0,15.0,True,True,"now window: cities with at least one recorded daily low below 10 F, the gate in Saia Item 810",2026-10-14T15:02Z
-H11b_days_below_10f_total,1058.0,1058.0,0.0,True,15.0,15.0,True,True,now window: total recorded days below 10 F across cities; checks the per-city table,2026-10-14T15:02Z
-H12_illustrative_per_100_shipments_odfl,599.9999999999999,599.9999999999999,0.0,True,15.0,15.0,True,True,"illustrative: 100 shipments x H6 x ODFL Item 810 minimum charge, assuming even spread and that the minimum applies",2026-10-14T15:02Z
-H12b_illustrative_per_100_shipments_saia,646.6666666666665,646.6666666666665,0.0,True,15.0,15.0,True,True,"illustrative: 100 shipments x H6 x Saia Item 810 minimum charge, assuming even spread and that the minimum applies",2026-10-14T15:02Z
-H1_stations_now_window,15.0,15.0,0.0,True,15.0,15.0,True,True,"stations with enough complete winters in the now window; drives the heat map, H4 to H7, rare but severe, and the load check",2026-10-14T15:02Z
-H1b_stations_then_vs_now,14.0,14.0,0.0,True,14.0,14.0,True,True,stations with enough complete winters in BOTH windows; drives then-vs-now only,2026-10-14T15:02Z
-H2_median_change_risk_days_per_winter,-7.449999999999996,-7.449999999999996,0.0,True,14.0,14.0,True,True,"median across stations, now minus then, headline product",2026-10-14T15:02Z
-H3_share_stations_fewer_risk_days,1.0,1.0,0.0,True,14.0,14.0,True,True,share of then-vs-now stations with fewer risk days now,2026-10-14T15:02Z
-H4_calendar_rule_city_weeks,330.0,330.0,0.0,True,15.0,15.0,True,True,"every station-week Nov 1 to Mar 31, now window",2026-10-14T15:02Z
-H5_data_rule_city_weeks,286.0,286.0,0.0,True,15.0,15.0,True,True,station-weeks at or above the weekly heat threshold,2026-10-14T15:02Z
-H6_share_city_weeks_not_needing_heat,0.1333333333333333,0.1333333333333333,0.0,True,15.0,15.0,True,True,share of calendar-rule weeks the data rule would not heat,2026-10-14T15:02Z
-H7_rare_but_severe_stations,0.0,0.0,0.0,True,15.0,15.0,True,True,now window: low risk share but at least one very cold day,2026-10-14T15:02Z
-H8_station_days_used,43862.0,43862.0,0.0,True,15.0,15.0,True,True,quality-checked winter days behind every number,2026-10-14T15:02Z
-H9_station_days_now_window,22680.0,22680.0,0.0,True,15.0,15.0,True,True,quality-checked winter days in the now window,2026-10-14T15:02Z
+H10_station_days_then_window,21182.0,21182.0,0.0,True,14.0,14.0,True,True,quality-checked winter days in the then window,2026-10-14T19:56Z
+H11_cities_any_day_below_10f,14.0,14.0,0.0,True,15.0,15.0,True,True,"now window: cities with at least one recorded daily low below 10 F, the gate in Saia Item 810",2026-10-14T19:56Z
+H11b_days_below_10f_total,1058.0,1058.0,0.0,True,15.0,15.0,True,True,now window: total recorded days below 10 F across cities; checks the per-city table,2026-10-14T19:56Z
+H12_illustrative_per_100_shipments_odfl,599.9999999999999,599.9999999999999,0.0,True,15.0,15.0,True,True,"illustrative: 100 shipments x H6 x ODFL Item 810 minimum charge, assuming even spread and that the minimum applies",2026-10-14T19:56Z
+H12b_illustrative_per_100_shipments_saia,646.6666666666665,646.6666666666665,0.0,True,15.0,15.0,True,True,"illustrative: 100 shipments x H6 x Saia Item 810 minimum charge, assuming even spread and that the minimum applies",2026-10-14T19:56Z
+H1_stations_now_window,15.0,15.0,0.0,True,15.0,15.0,True,True,"stations with enough complete winters in the now window; drives the heat map, H4 to H7, rare but severe, and the load check",2026-10-14T19:56Z
+H1b_stations_then_vs_now,14.0,14.0,0.0,True,14.0,14.0,True,True,stations with enough complete winters in BOTH windows; drives then-vs-now only,2026-10-14T19:56Z
+H2_median_change_risk_days_per_winter,-7.449999999999996,-7.449999999999996,0.0,True,14.0,14.0,True,True,"median across stations, now minus then, headline product",2026-10-14T19:56Z
+H3_share_stations_fewer_risk_days,1.0,1.0,0.0,True,14.0,14.0,True,True,share of then-vs-now stations with fewer risk days now,2026-10-14T19:56Z
+H4_calendar_rule_city_weeks,330.0,330.0,0.0,True,15.0,15.0,True,True,"every station-week Nov 1 to Mar 31, now window",2026-10-14T19:56Z
+H5_data_rule_city_weeks,286.0,286.0,0.0,True,15.0,15.0,True,True,station-weeks at or above the weekly heat threshold,2026-10-14T19:56Z
+H6_share_city_weeks_not_needing_heat,0.1333333333333333,0.1333333333333333,0.0,True,15.0,15.0,True,True,share of calendar-rule weeks the data rule would not heat,2026-10-14T19:56Z
+H7_rare_but_severe_stations,0.0,0.0,0.0,True,15.0,15.0,True,True,now window: low risk share but at least one very cold day,2026-10-14T19:56Z
+H8_station_days_used,43862.0,43862.0,0.0,True,15.0,15.0,True,True,quality-checked winter days behind every number,2026-10-14T19:56Z
+H9_station_days_now_window,22680.0,22680.0,0.0,True,15.0,15.0,True,True,quality-checked winter days in the now window,2026-10-14T19:56Z

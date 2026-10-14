@@ -1,18 +1,22 @@
 "use client";
 
 /**
- * ScrollFlyIn — from design/components/COMPONENT_PROMPTS.md (component 1).
+ * Opening sequence, built on ScrollFlyIn from
+ * design/components/COMPONENT_PROMPTS.md (component 1).
+ *
+ * Three beats on one pinned screen:
+ *   1. a plain white screen with the project title centred, Sofia's name small
+ *      at the bottom;
+ *   2. the truck drives left to right straight across the title;
+ *   3. once it has passed, the statement line fades up in its place.
  *
  * Changes from the supplied source, all required:
- *  1. `const screenWidth = window.innerWidth` ran during render, which throws
- *     during the static export (there is no window on the server). It now lives
- *     in state behind an effect, with a resize listener.
- *  2. Imports `motion` rather than `framer-motion` (CLAUDE.md: one motion
- *     library, under its current name).
- *  3. Honours prefers-reduced-motion: the truck parks under the title instead of
- *     driving across it, and the section collapses to one screen.
- *  4. The onError fallback to a remote CDN placeholder is gone; the fallback is
- *     a local file from design/MEDIA_LIST.md.
+ *  - `const screenWidth = window.innerWidth` ran during render, which throws
+ *    during the static export. It now lives in state behind an effect.
+ *  - Imports `motion`, not `framer-motion` (CLAUDE.md: one motion library).
+ *  - The remote CDN onError fallback is replaced with a local file.
+ *  - prefers-reduced-motion: no truck movement and no scroll-linked fades. The
+ *    title, a parked truck and the statement line are all simply present.
  */
 
 import * as React from "react";
@@ -20,24 +24,25 @@ import { motion, useScroll, useTransform } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
-interface ScrollFlyInProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+interface OpeningSequenceProps {
+  title: string;
+  byline: string;
+  statement: string;
   imageUrl: string;
-  imageAlt?: string;
   fallbackImageUrl?: string;
-  /** Natural width of the source file; never upscaled past 2x (MEDIA_LIST). */
+  imageAlt?: string;
   imageWidth?: number;
 }
 
-export function ScrollFlyIn({
-  children,
+export function OpeningSequence({
+  title,
+  byline,
+  statement,
   imageUrl,
-  imageAlt = "",
   fallbackImageUrl,
+  imageAlt = "",
   imageWidth = 733,
-  className,
-  ...props
-}: ScrollFlyInProps) {
+}: OpeningSequenceProps) {
   const targetRef = React.useRef<HTMLDivElement>(null);
   const [screenWidth, setScreenWidth] = React.useState(0);
   const [reduced, setReduced] = React.useState(false);
@@ -59,58 +64,86 @@ export function ScrollFlyIn({
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end start"],
   });
 
-  // Drive the truck from off the left edge to off the right edge.
-  const x = useTransform(
+  // The truck crosses between 0.12 and 0.62 of the scroll, fully clearing the
+  // title on both sides before anything else changes.
+  const truckX = useTransform(
     scrollYProgress,
-    [0.1, 0.8],
-    [`${-1.6 * screenWidth}px`, `${1.6 * screenWidth}px`],
+    [0.12, 0.62],
+    [`${-1.25 * screenWidth - imageWidth}px`, `${1.25 * screenWidth + imageWidth}px`],
   );
-  const opacity = useTransform(scrollYProgress, [0.1, 0.22, 0.72, 0.84], [0, 1, 1, 0]);
+  const truckOpacity = useTransform(scrollYProgress, [0.1, 0.18, 0.56, 0.64], [0, 1, 1, 0]);
 
-  const src = imageUrl;
+  // Title holds until the truck is over it, then hands over to the statement.
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.3, 0.46], [1, 1, 0]);
+  const bylineOpacity = useTransform(scrollYProgress, [0, 0.22, 0.36], [1, 1, 0]);
+  const statementOpacity = useTransform(scrollYProgress, [0.6, 0.74], [0, 1]);
+  const statementY = useTransform(scrollYProgress, [0.6, 0.74], [28, 0]);
+
+  if (reduced) {
+    // Reduced motion: one static screen, everything readable, nothing moves.
+    return (
+      <section className="border-b border-line px-4 py-24 sm:px-6 lg:px-10">
+        <div className="mx-auto max-w-[82rem] text-center">
+          <h1 className="statement statement-hero">{title}</h1>
+          <TruckImage
+            src={imageUrl}
+            alt={imageAlt}
+            fallback={fallbackImageUrl}
+            width={imageWidth}
+            className="mx-auto mt-10 h-auto w-[min(640px,80vw)]"
+          />
+          <p className="statement statement-lg mt-12">{statement}</p>
+          <p className="source mt-10">{byline}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <div
-      ref={targetRef}
-      className={cn("relative", reduced ? "h-auto" : "h-[200vh]", className)}
-      {...props}
-    >
-      <div
-        className={cn(
-          "flex items-center justify-center",
-          reduced ? "static min-h-0 py-24" : "sticky top-0 h-screen",
-        )}
-      >
-        <div className="relative z-10 w-full">{children}</div>
+    <div ref={targetRef} className="relative h-[280vh] border-b border-line">
+      <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center overflow-x-clip px-4">
+        {/* Beat 1: the title. */}
+        <motion.h1
+          style={{ opacity: titleOpacity }}
+          className="statement statement-hero relative z-10 max-w-[18ch] text-center"
+        >
+          {title}
+        </motion.h1>
 
-        {reduced ? (
-          // Parked: shown once, under the title, as a still image.
-          <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
-            <TruckImage
-              src={src}
-              alt={imageAlt}
-              fallback={fallbackImageUrl}
-              width={imageWidth}
-            />
-          </div>
-        ) : (
-          <motion.div
-            style={{ x, opacity }}
-            className="pointer-events-none absolute inset-0 z-20 flex items-center"
-            aria-hidden="true"
-          >
-            <TruckImage
-              src={src}
-              alt=""
-              fallback={fallbackImageUrl}
-              width={imageWidth}
-              decorative
-            />
-          </motion.div>
-        )}
+        {/* Beat 3: the statement, revealed after the truck has gone. */}
+        <motion.p
+          style={{ opacity: statementOpacity, y: statementY }}
+          className="statement statement-lg absolute inset-x-4 z-10 text-center"
+        >
+          {statement}
+        </motion.p>
+
+        {/* Beat 2: the truck, crossing on top of the title. */}
+        <motion.div
+          style={{ x: truckX, opacity: truckOpacity }}
+          className="pointer-events-none absolute inset-0 z-20 flex items-center"
+          aria-hidden="true"
+        >
+          <TruckImage
+            src={imageUrl}
+            alt=""
+            fallback={fallbackImageUrl}
+            width={imageWidth}
+            decorative
+            className="h-auto w-[min(860px,62vw)] max-w-none"
+          />
+        </motion.div>
+
+        {/* Sofia's name, small, at the foot of the opening screen. */}
+        <motion.p
+          style={{ opacity: bylineOpacity }}
+          className="absolute inset-x-0 bottom-10 z-10 text-center text-sm text-quiet"
+        >
+          {byline}
+        </motion.p>
       </div>
     </div>
   );
@@ -121,12 +154,14 @@ function TruckImage({
   alt,
   fallback,
   width,
+  className,
   decorative = false,
 }: {
   src: string;
   alt: string;
   fallback?: string;
   width: number;
+  className?: string;
   decorative?: boolean;
 }) {
   const [current, setCurrent] = React.useState(src);
@@ -140,9 +175,7 @@ function TruckImage({
       aria-hidden={decorative || undefined}
       width={width}
       height={Math.round(width * (229 / 733))}
-      // Capped well under 2x the 733 px source so it stays sharp (MEDIA_LIST.md),
-      // and small enough that it reads as crossing the page rather than burying it.
-      className="h-auto w-[min(860px,62vw)] max-w-none"
+      className={cn("max-w-none", className)}
       onError={() => {
         if (fallback && current !== fallback) setCurrent(fallback);
       }}
@@ -150,4 +183,4 @@ function TruckImage({
   );
 }
 
-export default ScrollFlyIn;
+export default OpeningSequence;

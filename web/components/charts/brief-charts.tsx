@@ -5,8 +5,15 @@
  * never depends on the drawing or on colour.
  */
 
-/** Chart 1 — 78% against the 90 to 94% band of the prior three years. */
-export function AcceptanceBar({
+/**
+ * Chart 1 — acceptance as 100 squares.
+ *
+ * A reader who knows nothing about freight should get this in two seconds:
+ * 100 squares, 78 filled, and the band the industry used to sit in marked on
+ * the same scale. A bar makes you convert a length into a count; squares are
+ * already the count.
+ */
+export function AcceptanceSquares({
   now,
   bandLow,
   bandHigh,
@@ -15,45 +22,58 @@ export function AcceptanceBar({
   bandLow: number;
   bandHigh: number;
 }) {
-  const W = 760;
-  const H = 96;
-  const barH = 34;
-  const y = 30;
-  const x = (v: number) => (v / 100) * W;
+  const cell = 30;
+  const gap = 6;
+  const cols = 10;
+  const W = cols * cell + (cols - 1) * gap;
+  const rows = 10;
+  const H = rows * cell + (rows - 1) * gap;
+
+  // The band sits on the same 100-square scale: squares 91 to 94 are the
+  // range the prior three years ran at, marked but not filled.
+  const inBand = (i: number) => i >= bandLow && i < bandHigh;
 
   return (
     <figure>
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="h-auto w-full"
+        className="h-auto w-full max-w-[360px]"
         role="img"
-        aria-label={`First-tender acceptance is ${now} percent, against a band of ${bandLow} to ${bandHigh} percent in the prior three years.`}
+        aria-label={`Of every 100 loads, ${now} were accepted by the first carrier asked. In the prior three years the rate ran between ${bandLow} and ${bandHigh} of every 100.`}
       >
-        <rect x={0} y={y} width={W} height={barH} fill="#F6F6F6" />
-        {/* The prior-three-years band, as a ghost marker. */}
-        <rect
-          x={x(bandLow)}
-          y={y - 8}
-          width={x(bandHigh) - x(bandLow)}
-          height={barH + 16}
-          fill="#E2E2E2"
-        />
-        <rect x={0} y={y} width={x(now)} height={barH} fill="#000000" />
-
-        <text x={0} y={y - 12} className="figure" fontSize="13" fill="#6B6B6B">
-          0%
-        </text>
-        {/* Anchored to the band's right edge: centring it overflows the viewBox,
-            because the band sits at 90 to 94% of the width. */}
-        <text x={x(bandHigh)} y={y - 14} fontSize="12" fill="#6B6B6B" textAnchor="end">
-          {bandLow} to {bandHigh}% prior three years
-        </text>
-        <text x={x(now) - 10} y={y + barH / 2 + 6} fontSize="17" fontWeight="650" fill="#FFFFFF" textAnchor="end">
-          {now}%
-        </text>
-        <line x1={x(bandLow)} y1={y - 8} x2={x(bandLow)} y2={y + barH + 8} stroke="#AFAFAF" strokeWidth="1" />
-        <line x1={x(bandHigh)} y1={y - 8} x2={x(bandHigh)} y2={y + barH + 8} stroke="#AFAFAF" strokeWidth="1" />
+        {Array.from({ length: 100 }, (_, i) => {
+          const row = Math.floor(i / cols);
+          const col = i % cols;
+          const filled = i < now;
+          return (
+            <rect
+              key={i}
+              x={col * (cell + gap)}
+              y={row * (cell + gap)}
+              width={cell}
+              height={cell}
+              fill={filled ? "#000000" : "#FFFFFF"}
+              stroke={filled ? "#000000" : inBand(i) ? "#000000" : "#E2E2E2"}
+              strokeWidth={inBand(i) ? 2 : 1}
+              strokeDasharray={inBand(i) ? "4 3" : undefined}
+            />
+          );
+        })}
       </svg>
+
+      <figcaption className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+        <span className="inline-flex items-center gap-2 text-sm">
+          <span aria-hidden="true" className="h-3.5 w-3.5 bg-ink" />
+          accepted first time ({now})
+        </span>
+        <span className="inline-flex items-center gap-2 text-sm">
+          <span
+            aria-hidden="true"
+            className="h-3.5 w-3.5 border-2 border-dashed border-ink bg-paper"
+          />
+          {bandLow} to {bandHigh}, prior three years
+        </span>
+      </figcaption>
     </figure>
   );
 }

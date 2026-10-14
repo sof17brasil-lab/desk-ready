@@ -11,6 +11,7 @@
 
 import * as React from "react";
 
+import { EmailDialog, type EmailTemplate } from "@/components/winter/email-dialog";
 import StackingCards, { StackingCardItem } from "@/components/ui/stacking-cards";
 
 export interface PlaybookCard {
@@ -19,7 +20,7 @@ export interface PlaybookCard {
   image: string;
   checklist: React.ReactNode[];
   note?: React.ReactNode;
-  email: { subject: string; lines: string[] };
+  email: EmailTemplate;
 }
 
 export function Playbook({ cards }: { cards: PlaybookCard[] }) {
@@ -73,17 +74,9 @@ export function Playbook({ cards }: { cards: PlaybookCard[] }) {
 
               {c.note && <div className="mt-6 border-l-2 border-ink bg-surface p-4">{c.note}</div>}
 
-              <details className="mt-auto border-t border-line pt-4">
-                <summary className="cursor-pointer text-sm font-medium">Email template</summary>
-                <div className="mt-3 bg-surface p-4 text-sm leading-relaxed">
-                  <p className="font-medium">Subject: {c.email.subject}</p>
-                  {c.email.lines.map((l, li) => (
-                    <p key={li} className="mt-2 text-deep">
-                      {l}
-                    </p>
-                  ))}
-                </div>
-              </details>
+              <div className="mt-auto border-t border-line pt-5">
+                <EmailDialog title={c.title} email={c.email} />
+              </div>
             </div>
           </article>
         </StackingCardItem>

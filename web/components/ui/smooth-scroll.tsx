@@ -61,7 +61,11 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
 
       ScrollTrigger.refresh();
 
+      // Modal dialogs pause Lenis through this handle (see email-dialog.tsx).
+      (window as unknown as { __lenis?: unknown }).__lenis = lenis;
+
       dispose = () => {
+        delete (window as unknown as { __lenis?: unknown }).__lenis;
         lenis.off("scroll", onScroll);
         gsap.ticker.remove(tick);
       };

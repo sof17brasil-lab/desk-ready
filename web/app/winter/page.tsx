@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { IllustrativeSaving } from "@/components/calculators/illustrative-saving";
 import { ColdestStrips } from "@/components/charts/coldest-strips";
+import { Snowfall } from "@/components/winter/snowfall";
 import { Quote, Section, SectionHead, Stat } from "@/components/site/bits";
 import HorizontalFeatureReveal, { type FeatureCard } from "@/components/ui/horizontal-feature-reveal";
 import { Playbook } from "@/components/winter/playbook";
@@ -147,7 +148,9 @@ const featureCards: FeatureCard[] = productOptions.map((p, i) => {
   const media = [
     { img: "/media/p2-steel-drums.webp", alt: "Steel drums stacked on a pallet" },
     { img: "/media/p4-bulk-tank-trailer.webp", alt: "A bulk tank trailer" },
-    { img: "/media/p9-closing-band-aerial-terminal.webp", alt: "An aerial view of a freight terminal" },
+    // p9 now carries the hero, so this card uses a different approved photo
+    // (design/MEDIA_LIST.md) to keep p9 to a single appearance on the page.
+    { img: "/media/p7-cold-snap-street.webp", alt: "A street during a cold snap" },
   ][i];
   return {
     number: `0${i + 1}`,
@@ -175,36 +178,68 @@ const featureCards: FeatureCard[] = productOptions.map((p, i) => {
 export default function WinterPage() {
   return (
     <>
-      {/* Header */}
-      <Section>
-        <p className="marker">Desk Ready · planning tool</p>
-        <h1 className="display display-xl mt-5 max-w-[14ch]">Winter Load Readiness</h1>
-        <p className="lede mt-6">
-          Which winter loads need heat, by city and week, from the last 10 winters of NOAA records.
-        </p>
-        <p className="mt-4 inline-block border border-ink px-3 py-1.5 text-sm">
-          A planning tool for the desk. Not a forecast, not a savings claim.
-        </p>
+      {/* 10. Full-screen hero: photo, overlay, title, and light snowfall. */}
+      <section className="relative isolate flex min-h-[calc(100svh-3.5rem)] items-end overflow-hidden bg-ink">
+        <img
+          src={asset("/media/p9-closing-band-aerial-terminal.webp")}
+          alt=""
+          aria-hidden="true"
+          className="photo absolute inset-0 h-full w-full object-cover object-[50%_45%]"
+        />
+        {/* Dark wash so the title holds contrast over any part of the photo. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.55),rgba(0,0,0,0.45)_45%,rgba(0,0,0,0.85))]"
+        />
+        <Snowfall className="pointer-events-none absolute inset-0 h-full w-full" />
 
-        <div className="mt-14 grid gap-8 border-t border-line pt-10 sm:grid-cols-3">
-          <Stat
-            size="sm"
-            figure={fmtInt(H1.value)}
-            label="stations analysed"
-            source={<>first-order airport stations, verified against NOAA&rsquo;s station list</>}
-          />
-          <Stat
-            size="sm"
-            figure={fmtInt(H8.value)}
-            label="quality-checked station-days behind every number"
-            source={<>Q-flag blank, −9999 dropped · 10 winters per window</>}
-          />
-          <Stat
-            size="sm"
-            figure="3"
-            label="product storage rules checked"
-            source={<>31 °F, 32 °F and 40 °F, from three public technical data sheets</>}
-          />
+        <div className="on-dark relative mx-auto w-full max-w-[82rem] px-4 pb-16 pt-28 text-paper sm:px-6 lg:px-10">
+          <p className="marker">Desk Ready · planning tool</p>
+          <h1 className="statement statement-hero mt-5 max-w-[13ch]">Winter Load Readiness</h1>
+          <p className="mt-7 max-w-[48ch] text-[clamp(1.0625rem,1.6vw,1.3125rem)] leading-[1.5] text-white/85">
+            Which winter loads need heat, by city and week, from the last 10 winters of NOAA
+            records.
+          </p>
+          <p className="mt-5 inline-block border border-white/60 px-3 py-1.5 text-sm">
+            A planning tool for the desk. Not a forecast, not a savings claim.
+          </p>
+        </div>
+      </section>
+
+      {/* 11. Three stat squares. */}
+      <Section>
+        <div className="grid gap-5 sm:grid-cols-3">
+          {[
+            {
+              figure: fmtInt(H1.value),
+              label: "stations analyzed",
+              note: "major airport weather stations, each checked against NOAA\u2019s station list",
+            },
+            {
+              figure: fmtInt(H8.value),
+              label: "quality-checked station-days behind every number",
+              note: "days that failed NOAA\u2019s quality check or had no reading were removed · 10 winters per window",
+            },
+            {
+              figure: "3",
+              label: "product storage rules checked",
+              note: "31 °F, 32 °F and 40 °F, from three public technical data sheets",
+            },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="flex aspect-square flex-col items-center justify-between border border-line bg-surface p-6 text-center sm:aspect-auto sm:min-h-[17rem]"
+            >
+              <span />
+              <div>
+                <p className="figure text-[clamp(2.5rem,5vw,3.75rem)] leading-none">{s.figure}</p>
+                <p className="mx-auto mt-4 max-w-[22ch] text-sm font-medium leading-snug">
+                  {s.label}
+                </p>
+              </div>
+              <p className="source mx-auto max-w-[30ch]">{s.note}</p>
+            </div>
+          ))}
         </div>
       </Section>
 
@@ -424,13 +459,12 @@ export default function WinterPage() {
         cards={[
           {
             n: "01 · Before booking",
-            title: "Book the equipment, not the hope",
+            title: "Before booking",
             image: asset("/media/p1-winter-highway-truck.webp"),
             checklist: [
-              <>Run the lane and ship week through <a className="underline underline-offset-4" href="#load-check">Check a load</a>.</>,
-              <>Request heated or protect-from-freeze equipment early. {odfl.carrier.replace(" Freight Line", "")} requires the shipper to &ldquo;contact the local service center to establish in advance whether the service is available&rdquo;.</>,
-              <>Give carriers lead time. The Q3 report asks for &ldquo;48 to 72 hours of lead time&rdquo;, and bulk lead time has moved to &ldquo;7 to 10 days&rdquo;.</>,
-              <>Put the words on the bill of lading itself. Both tariffs require the notation on the BOL; marking the freight alone is not enough.</>,
+              <>Run the load check (section 05) for origin, destination and ship week.</>,
+              <>Book heated equipment early: 48 to 72 hours, 7 to 10 days for bulk.</>,
+              <>Write the minimum storage temperature on the order and BOL.</>,
             ],
             note: (
               <p className="text-sm leading-relaxed">
@@ -441,24 +475,36 @@ export default function WinterPage() {
               </p>
             ),
             email: {
-              subject: "Protect from freezing — [origin] to [destination], pickup [date]",
-              lines: [
-                "Please confirm heated or protect-from-freeze service is available for this shipment, and the set point you can hold.",
-                "The bill of lading will be marked \"PROTECT FROM FREEZING\" on the first page, and each handling unit will be marked.",
-                "If the service is not available for this pickup date, please tell me today so I can arrange a heated truckload instead.",
+              subject:
+                "Protect-from-freeze request: Load [#], [Origin] to [Destination], picks up [date]",
+              body: [
+                "Hello [Name],",
+                "We are tendering Load [#]: [product], [quantity and packaging], picking up [date] at [origin] for delivery [date] to [destination]. Per the manufacturer\u2019s technical data sheet, the product must be kept above [32 °F] in transit.",
+                "Please confirm by [date, time] that you can provide heated or protect-from-freeze service, including the equipment type and any accessorial charge.",
+                "Thank you,",
+                "[Your name] | [Title] | [Phone]",
               ],
             },
           },
           {
             n: "02 · Cold snap in transit",
-            title: "Confirm the set point, then the backup",
-            image: asset("/media/p7-cold-snap-street.webp"),
+            title: "Cold snap in transit",
+            image: asset("/media/p8-arrived-cold.webp"),
             checklist: [
-              <>Confirm with the carrier that the equipment is heated and ask for the set point in writing.</>,
-              <>Check whether the lane is forecast below the published service floor. {saia.carrier} provides the service only when &ldquo;Outside temperature is forecast to be 10 degrees Fahrenheit or higher&rdquo;.</>,
-              <>Update the receiver with the revised ETA and the protection in place.</>,
-              <>Escalate if no heat can be confirmed: line up a heated truckload or hold the load.</>,
-              <>Verify any reroute by phone. &ldquo;{quote(21).quoted}&rdquo;</>,
+              <>
+                Check the forecast at{" "}
+                <a
+                  href="https://www.weather.gov/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-4"
+                >
+                  weather.gov
+                </a>{" "}
+                for each overnight stop.
+              </>,
+              <>Confirm heat and set point with the carrier.</>,
+              <>Update the receiver; escalate if heat is not confirmed.</>,
             ],
             note: (
               <p className="text-sm leading-relaxed">
@@ -475,31 +521,41 @@ export default function WinterPage() {
               </p>
             ),
             email: {
-              subject: "Cold snap — confirm heat and set point, PRO [number]",
-              lines: [
-                "This load is moving through a lane that has run below 10 °F in recent winters. Please confirm the trailer is heated and give me the set point you are holding.",
-                "If protect-from-freeze service cannot be maintained for any leg, call me before the next departure.",
-                "Receiver has been notified. I can accept a delay to keep the product protected.",
+              subject: "Cold weather alert: Load [#] in transit to [Destination]",
+              body: [
+                "Hello [Name],",
+                "The National Weather Service forecasts a low of [temperature] near [location] on [date], on the route for Load [#]. This load must be protected from freezing below [32 °F].",
+                "Please confirm that heat is running, the current set point, and the updated ETA. If heat cannot be maintained, please call me right away at [phone] so we can arrange an alternative.",
+                "Thank you,",
+                "[Your name] | [Title] | [Phone]",
               ],
             },
           },
           {
             n: "03 · Arrived cold",
-            title: "Follow the sheet, document the claim",
-            image: asset("/media/p8-arrived-cold.webp"),
+            title: "Arrived cold",
+            image: asset("/media/p7-cold-snap-street.webp"),
             checklist: [
-              <>Do not judge by appearance. The sheets differ: MasterAir AE 90 says &ldquo;Although freezing does not harm this product&rdquo;, while the other two give thaw instructions only.</>,
-              <>Follow the sheet&rsquo;s own thaw words: MasterPozzolith 80 and MasterAir AE 90 say &ldquo;thaw at 35 °F (2 °C) or above&rdquo;; MasterSure Z 60 says to &ldquo;thaw and reconstitute by mechanical agitation&rdquo;.</>,
-              <>Never use pressurised air for agitation. All three sheets say not to.</>,
-              <>Photograph the seal, the temperature recorder if fitted, and the BOL notation.</>,
-              <>Document for the claim and log the facility, so the lane&rsquo;s pattern is visible next winter.</>,
+              <>Hold the material until it is checked.</>,
+              <>Follow the product sheet&rsquo;s thaw steps exactly.</>,
+              <>Photograph it and note it on the delivery receipt.</>,
             ],
+            note: (
+              <p className="text-sm leading-relaxed">
+                The sheets differ: MasterAir AE 90 says &ldquo;Although freezing does not harm this
+                product&rdquo;, while the other two give thaw instructions only. All three say not
+                to use pressurised air for agitation.
+              </p>
+            ),
             email: {
-              subject: "Cold arrival — [product], PRO [number], [date]",
-              lines: [
-                "This shipment arrived after transit through sub-freezing temperatures. Photos of the seal, BOL and packaging are attached.",
-                "We are following the manufacturer's published thaw instructions and will not use pressurised air for agitation.",
-                "Please open a claim file and confirm the protect-from-freeze service that was billed on this shipment.",
+              subject: "Load [#] received in cold conditions: please hold before use",
+              body: [
+                "Hello [Name],",
+                "Load [#] ([product]) was delivered on [date] at [time], and it may have been exposed to temperatures below the [32 °F] limit on its technical data sheet.",
+                "Please hold the material until it has been checked, and follow the thaw instructions on the product sheet: [link]. Please also send photos of the labels and packaging and note the condition on the delivery receipt.",
+                "I am coordinating next steps with the carrier and will follow up by [time].",
+                "Thank you,",
+                "[Your name] | [Title] | [Phone]",
               ],
             },
           },

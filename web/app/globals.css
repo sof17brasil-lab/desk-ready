@@ -23,6 +23,8 @@
 
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
+  /* Condensed display face, used only for the uppercase statement lines. */
+  --font-display: "Barlow Condensed", "Arial Narrow", ui-sans-serif, sans-serif;
 
   /* Reference rhythm: a 40px base with an 80px step for major breaks. */
   --spacing-section: 5rem;
@@ -84,6 +86,38 @@ body {
   .display-md {
     font-size: clamp(1.75rem, 3.2vw, 2.75rem);
     line-height: 1;
+  }
+
+  /*
+    Statement type: condensed, uppercase, set in the display face. Reserved for
+    the opening title, the post-truck reveal, and the two brief headings — the
+    places where the type IS the design rather than a label on something else.
+  */
+  .statement {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.88;
+    text-wrap: balance;
+  }
+
+  .statement-hero {
+    font-size: clamp(2.5rem, 9vw, 8.5rem);
+  }
+
+  .statement-lg {
+    font-size: clamp(2rem, 6.5vw, 5.5rem);
+  }
+
+  /* Section headings that read as spoken lines, not labels. */
+  .statement-sm {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.05;
+    font-size: clamp(1.25rem, 2.4vw, 2rem);
   }
 
   /* Small structural markers: the one place all-caps is used. */

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { AcceptanceBar, DetentionGrid, OtriJumps } from "@/components/charts/brief-charts";
+import { AcceptanceSquares, DetentionGrid, OtriJumps } from "@/components/charts/brief-charts";
 import { RejectionCalculator } from "@/components/calculators/rejection-calculator";
-import { Marquee, Quote, Section, SectionHead, Source, Stat } from "@/components/site/bits";
-import { ScrollFlyIn } from "@/components/ui/hero-section-3";
+import { QuoteCarousel } from "@/components/ui/testimonals-carousel";
+import { Section, SectionHead, Source, Stat } from "@/components/site/bits";
+import { OpeningSequence } from "@/components/ui/hero-section-3";
 import { StickyPanel } from "@/components/ui/smooth-scroll";
 import { fact, quote, type SourceRow } from "@/lib/data";
 import { asset } from "@/lib/utils";
@@ -23,41 +24,84 @@ const fraud = fact("fraud_share");
 const otri25 = fact("winter_otri_2025");
 const otri24 = fact("winter_otri_2024");
 
+// The same four quotes as before, word for word from SOURCES.md. Attribution
+// is split out so the carousel can show who said it under each one.
+const carouselQuotes = [
+  {
+    row: 31,
+    speaker: "Zach Strickland",
+    speakerTitle: "FreightWaves",
+    publication: "FreightWaves",
+  },
+  { row: 25, publication: "Uber Freight, Q2 freight market update" },
+  {
+    row: 30,
+    publication: "ATRI, truck driver detention research",
+    speakerTitle: "ATRI's interpretation of GPS data",
+  },
+  {
+    row: 1,
+    speaker: "Greg Umstead",
+    speakerTitle: "VP of commercial operations, Uber Freight",
+    publication: "Uber Freight blog, chemical supply chains",
+  },
+].map((q) => {
+  const row = quote(q.row);
+  return {
+    text: row.quoted,
+    speaker: q.speaker,
+    speakerTitle: q.speakerTitle,
+    publication: q.publication,
+    date: row.date,
+    link: row.link,
+    sourceRow: row.row,
+  };
+});
+
 export default function HomePage() {
   return (
     <>
-      {/* 1. Truck intro. The one bold moment on the site: Sofia's own image
-          driving across the title as you scroll. */}
-      <ScrollFlyIn
+      {/* 1-3. The opening: title, the truck crossing it, then the statement. */}
+      <OpeningSequence
+        title="Uber Freight portfolio project"
+        byline="Sofia Mota"
+        statement="See why carriers say no"
         imageUrl={asset("/media/hero-truck-branded.webp")}
         fallbackImageUrl={asset("/media/hero-truck-unbranded.webp")}
         imageAlt="Top view of a tractor-trailer"
-        className="border-b border-line"
-      >
-        <div className="mx-auto max-w-[82rem] px-4 sm:px-6 lg:px-10">
-          <p className="marker">Desk Ready · Sofia Mota</p>
-          <h1 className="display display-xl mt-5 max-w-[16ch]">Why carriers say no</h1>
-          <p className="lede mt-6">
-            Four measured problems in 2026 freight, and the desk habits that move each one.
-          </p>
+      />
 
-          <div className="mt-12 grid items-end gap-8 border-t border-line pt-8 md:grid-cols-[auto_minmax(0,1fr)] md:gap-14">
-            <Stat
-              size="lg"
-              figure={acceptanceNow.figure}
-              label={acceptanceNow.label}
-              source={<Source rows={acceptanceNow.sources} />}
-            />
-            <div className="pb-2">
-              <AcceptanceBar now={78} bandLow={90} bandHigh={94} />
+      {/* The brief proper. */}
+      <Section>
+        <h2 className="display display-xl max-w-[16ch]">Why carriers say no</h2>
+        <p className="statement-sm mt-8 max-w-[22ch]">Four measured problems in 2026 freight</p>
+        <p className="statement-sm mt-2 max-w-[22ch] text-quiet">
+          The desk habits that move each one
+        </p>
+
+        {/* 5. The headline number, written so anyone gets it at a glance. */}
+        <div className="mt-16 grid items-start gap-10 border-t border-line pt-12 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16">
+          <div>
+            <p className="text-[clamp(1.375rem,3vw,2.125rem)] leading-[1.25]">
+              <strong className="figure">78</strong> of every 100 loads were accepted by the first
+              carrier asked (August 2026).
+            </p>
+            <p className="mt-5 max-w-[44ch] text-[0.9375rem] leading-relaxed text-deep">
+              In the prior three years it ran at {acceptancePrior.figure}. The gap is the loads that
+              fall through to a backup carrier, and each one costs more.
+            </p>
+            <div className="source mt-6 max-w-[48ch]">
+              <Source rows={[...acceptanceNow.sources, ...acceptancePrior.sources]} />
             </div>
           </div>
 
-          <p className="source mt-8">Truck image: Sofia Mota</p>
+          <AcceptanceSquares now={78} bandLow={90} bandHigh={94} />
         </div>
-      </ScrollFlyIn>
 
-      {/* 2. Four problem panels, stacking over each other. */}
+        <p className="source mt-12">Truck image: Sofia Mota</p>
+      </Section>
+
+      {/* 6. Four problem panels, each labelled THE PROBLEM / THE FIX. */}
       <div>
         <StickyPanel tone="dark">
           <ProblemPanel
@@ -123,41 +167,37 @@ export default function HomePage() {
         </StickyPanel>
       </div>
 
-      {/* 3. Marquee of real figures. */}
-      <Marquee
-        items={[
-          `${acceptanceNow.figure} first-tender acceptance`,
-          `${detentionShare.figure} of stops detained`,
-          `${bulkLead.figure} bulk lead time`,
-          `${fraud.figure} ownership-change fraud`,
-          `${hygiene.figure} swing in rate evaluations`,
-        ]}
-      />
-
-      {/* 4. Winter band. */}
+      {/* 8. Winter band: bigger type, taller photo, truck kept in frame. */}
       <section className="relative isolate overflow-hidden bg-ink text-paper">
         <img
           src={asset("/media/p1-winter-highway-truck.webp")}
           alt=""
           aria-hidden="true"
-          className="photo absolute inset-0 h-full w-full object-cover opacity-45"
+          // object-position keeps the truck itself in frame rather than
+          // centring on empty road and sky.
+          className="photo absolute inset-0 h-full w-full object-cover object-[50%_38%] opacity-40"
           loading="lazy"
         />
-        <div className="on-dark relative mx-auto max-w-[82rem] px-4 py-24 sm:px-6 lg:px-10">
-          <p className="marker text-white/60">Winter</p>
-          <p className="display display-md mt-4 max-w-[26ch]">
-            Winter storms pushed tender rejections from {otri25.figure} in early Jan 2025.
+        <div className="on-dark relative mx-auto flex min-h-[78vh] max-w-[82rem] flex-col justify-center px-4 py-32 sm:px-6 lg:px-10">
+          <p className="marker">Winter</p>
+          <p className="figure mt-6 text-[clamp(3.5rem,11vw,9rem)] leading-[0.85]">
+            {otri25.figure}
           </p>
-          <p className="source mt-4 text-white/65">
-            FreightWaves, OTRI, Jan 18, 2025 · Jan 2024 moved {otri24.figure}
+          <p className="mt-6 max-w-[22ch] text-[clamp(1.5rem,3.4vw,2.5rem)] leading-[1.15]">
+            Winter storms pushed tender rejections up in early January 2025.
           </p>
-          <Link href="/winter/" className="btn mt-8">
-            Plan winter loads
-          </Link>
+          <p className="source mt-6">
+            FreightWaves, OTRI, Jan 18, 2025 · January 2024 moved {otri24.figure}
+          </p>
+          <div className="mt-10">
+            <Link href="/winter/" className="btn">
+              Plan winter loads
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* 5. Calculator. */}
+      {/* Calculator. */}
       <Section id="calculator" tone="surface">
         <SectionHead
           index={5}
@@ -170,18 +210,15 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Context quotes. */}
+      {/* 9. In their words, as a carousel. */}
       <Section>
         <SectionHead index={6} total={6} title="In their words" />
-        <div className="mt-12 grid gap-10 md:grid-cols-2">
-          <Quote row={quote(31)} />
-          <Quote row={quote(25)} />
-          <Quote row={quote(30)} />
-          <Quote row={quote(1)} />
+        <div className="mt-12">
+          <QuoteCarousel quotes={carouselQuotes} />
         </div>
       </Section>
 
-      {/* 6. Dark closing band. */}
+      {/* Dark closing band. */}
       <section className="relative isolate overflow-hidden bg-ink text-paper">
         <img
           src={asset("/media/p9-closing-band-aerial-terminal.webp")}
@@ -203,7 +240,7 @@ export default function HomePage() {
               Method &amp; SQL
             </Link>
           </div>
-          <p className="source mt-12 text-white/55">
+          <p className="source mt-12">
             Detention figures are industry-wide (ATRI, 2023), not Uber Freight figures.
           </p>
         </div>
@@ -238,17 +275,18 @@ function ProblemPanel({
         <p className={`marker ${muted}`}>
           {n} · {kicker}
         </p>
-        <p className="figure mt-6 text-[clamp(3.5rem,10vw,7rem)] leading-[0.85]">{figure}</p>
+        <p className={`marker mt-6 ${muted}`}>The problem</p>
+        <p className="figure mt-3 text-[clamp(3.5rem,10vw,7rem)] leading-[0.85]">{figure}</p>
         <p className={`mt-3 text-sm ${muted}`}>{against}</p>
       </div>
 
       <div>
         <p className="text-[clamp(1.125rem,2vw,1.5rem)] leading-snug">{line}</p>
         <div className="mt-8 border-t border-current/20 pt-5">
-          <p className={`marker ${muted}`}>Desk habit</p>
+          <p className={`marker ${muted}`}>The fix</p>
           <p className="mt-2 text-[0.9375rem] leading-relaxed">{habit}</p>
         </div>
-        <div className={`source mt-6 ${tone === "dark" ? "text-white/55" : ""}`}>
+        <div className="source mt-6">
           <Source rows={sources} />
         </div>
       </div>

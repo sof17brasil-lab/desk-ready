@@ -98,18 +98,30 @@ export default function HorizontalFeatureReveal({
         // below needs it as `containerAnimation`, and looking it up from the
         // global ScrollTrigger list picks up whichever trigger happens to be
         // registered first, which is not necessarily this one.
+        // The nav is sticky, so pinning at "top top" parks the cards behind
+        // it and clips their tops. Start the pin at the bottom edge of the nav
+        // and give the viewport exactly the height that is left.
+        const navH = () =>
+          document.querySelector("header")?.getBoundingClientRect().height ?? 0;
+        const setViewportHeight = () => {
+          viewport.style.height = `calc(100svh - ${navH()}px)`;
+        };
+        setViewportHeight();
+
         const horizontal = gsap.to(track, {
           x: () => -distance(),
           ease: "none",
           scrollTrigger: {
             id: sectionId,
             trigger: el,
-            start: "top top",
+            start: () => `top ${navH()}px`,
             end: () => `+=${distance()}`,
             scrub: 0.6,
             pin: true,
+            pinSpacing: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            onRefresh: setViewportHeight,
           },
         });
 
@@ -197,17 +209,19 @@ export default function HorizontalFeatureReveal({
 
   return (
     <section ref={rootRef} id={sectionId} className="relative z-10 w-full">
-      <div className="feature-viewport w-full overflow-hidden">
+      {/* overflow-x clip only: `overflow: hidden` on both axes cropped the
+          top of each card while its reveal animation was still running. */}
+      <div className="feature-viewport w-full [overflow-x:clip] [overflow-y:visible] max-[1025px]:!h-auto">
         <div
-          className="feature-track flex w-max gap-(--card-gap) px-4 max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:gap-12"
+          className="feature-track flex h-full w-max items-center gap-(--card-gap) px-4 max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-12 max-[1025px]:py-4"
           style={{ "--card-gap": `${cardGap}vw` } as CSSProperties}
         >
           {cards.map((card, i) => (
             <article
               key={i}
-              className="feature-card flex w-[72vw] shrink-0 gap-[4vw] max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:gap-6"
+              className="feature-card flex max-h-full w-[72vw] shrink-0 items-center gap-[4vw] py-[4vh] max-[1025px]:max-h-none max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-[1025px]:py-0"
             >
-              <div className="h-[62vh] w-[32vw] shrink-0 overflow-hidden bg-surface max-[1025px]:h-[56vw] max-[1025px]:w-full">
+              <div className="h-full max-h-[min(62vh,34rem)] w-[32vw] shrink-0 self-center overflow-hidden bg-surface max-[1025px]:h-[56vw] max-[1025px]:max-h-none max-[1025px]:w-full">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={card.image}
@@ -219,7 +233,7 @@ export default function HorizontalFeatureReveal({
                 />
               </div>
 
-              <div className="flex max-w-[34rem] flex-col gap-5 pt-[2vh]">
+              <div className="flex max-h-full max-w-[34rem] flex-col justify-center gap-5 overflow-y-auto">
                 <p className="feature-no marker text-ink">{card.number}</p>
                 <h3 className="feature-title display display-md">{card.title}</h3>
                 <div className="space-y-3">

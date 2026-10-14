@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Barlow_Condensed, Inter } from "next/font/google";
 
 import { Footer, Nav } from "@/components/site/chrome";
 import { SmoothScrollProvider } from "@/components/ui/smooth-scroll";
@@ -10,6 +10,16 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
+});
+
+// Display face for the uppercase statement lines only. Condensed and
+// industrial, so it reads as transport signage rather than as UI text, and is
+// unmistakably distinct from Inter at a glance.
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -32,7 +42,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" id="top" className={inter.variable}>
+    <html lang="en" id="top" className={`${inter.variable} ${barlowCondensed.variable}`}>
       <body className="min-h-dvh bg-paper text-ink antialiased">
         <a
           href="#main"
