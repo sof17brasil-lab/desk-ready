@@ -31,11 +31,12 @@ export function WinterExplorer({
   defaultThreshold,
   ledger,
   tariffs,
-  severeTminF,
+  tariffGateF,
   headlineProductId,
   h2,
   h3,
   climateQuote,
+  noLaneExemptSection,
 }: {
   products: ProductOption[];
   dumbbellByProduct: Record<string, DumbbellRow[]>;
@@ -46,11 +47,13 @@ export function WinterExplorer({
   defaultThreshold: number;
   ledger: { calendar: number; dataRule: number; notHeated: number };
   tariffs: TariffInfo[];
-  severeTminF: number;
+  tariffGateF: number;
   headlineProductId: string;
   h2: { value: number; n: number };
   h3: { value: number; n: number };
   climateQuote: React.ReactNode;
+  /** Section 04, rendered here so the numbered sections stay in order. */
+  noLaneExemptSection: React.ReactNode;
 }) {
   const [productId, setProductId] = React.useState(headlineProductId);
   const [threshold, setThreshold] = React.useState(defaultThreshold);
@@ -81,8 +84,11 @@ export function WinterExplorer({
             lede="The only then-versus-now view on this site. Everything after it uses the last 10 winters."
           />
 
-          <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-16">
-            <div>
+          <div className="mt-12 grid min-w-0 gap-10 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-16">
+            {/* min-w-0 on the items, not just the container: a grid item
+                defaults to min-width:auto and would otherwise be widened to the
+                dumbbell SVG's 640px min-width, pushing the whole page sideways. */}
+            <div className="min-w-0">
               <p className="figure text-[clamp(3rem,7vw,5rem)] leading-[0.9]">
                 {Math.abs(median).toFixed(1)}
               </p>
@@ -115,7 +121,7 @@ export function WinterExplorer({
               <div className="mt-8 border-t border-line pt-5">{climateQuote}</div>
             </div>
 
-            <div>
+            <div className="min-w-0">
               <Dumbbell
                 rows={rows}
                 products={products.map((p) => ({ id: p.id, label: p.label }))}
@@ -164,6 +170,9 @@ export function WinterExplorer({
         </div>
       </section>
 
+      {/* 04 renders here so the page reads 01, 02, 03, 04, 05, 06. */}
+      {noLaneExemptSection}
+
       {/* 05 · Check a load */}
       <section id="load-check" className="scroll-mt-20 bg-surface px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="mx-auto w-full max-w-[82rem]">
@@ -181,7 +190,7 @@ export function WinterExplorer({
               products={products}
               threshold={threshold}
               tariffs={tariffs}
-              severeTminF={severeTminF}
+              tariffGateF={tariffGateF}
             />
           </div>
         </div>

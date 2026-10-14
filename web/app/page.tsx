@@ -69,12 +69,12 @@ export default function HomePage() {
               <>
                 Rejected loads cost more as they{" "}
                 <em className="not-italic underline decoration-white/30 underline-offset-4">
-                  &ldquo;{quote(23).exact_words}&rdquo;
+                  &ldquo;{quote(23).quoted}&rdquo;
                 </em>
                 .
               </>
             }
-            habit={<>Book early: &ldquo;{leadAsk.sources[0].exact_words}&rdquo;</>}
+            habit={<>Book early: &ldquo;{leadAsk.sources[0].quoted}&rdquo;</>}
             sources={[...acceptanceNow.sources, ...acceptancePrior.sources, quote(23), ...leadAsk.sources]}
           />
         </StickyPanel>
@@ -86,7 +86,7 @@ export default function HomePage() {
             kicker="Short notice"
             figure={bulkLead.figure}
             against="up from 24 to 72 hours"
-            line={<>&ldquo;{quote(5).exact_words}&rdquo;</>}
+            line={<>&ldquo;{quote(5).quoted}&rdquo;</>}
             habit="Plan bulk and heated equipment a week ahead."
             sources={[...bulkLead.sources, quote(5)]}
           />
@@ -101,7 +101,7 @@ export default function HomePage() {
             line={
               <>
                 {detentionCost.figure} lost to detention in 2023, industry-wide. Poor shipping
-                hygiene &ldquo;{hygiene.sources[0].exact_words}&rdquo;
+                hygiene &ldquo;{hygiene.sources[0].quoted}&rdquo;
               </>
             }
             habit={<>Clean appointments, paperwork ready, track detention by facility.</>}
@@ -116,8 +116,8 @@ export default function HomePage() {
             kicker="Fraud"
             figure={fraud.figure}
             against="of reported incidents, Q2"
-            line={<>&ldquo;{fraud.sources[0].exact_words}&rdquo;</>}
-            habit={<>&ldquo;{quote(21).exact_words}&rdquo;</>}
+            line={<>&ldquo;{fraud.sources[0].quoted}&rdquo;</>}
+            habit={<>&ldquo;{quote(21).quoted}&rdquo;</>}
             sources={[...fraud.sources, quote(21)]}
           />
         </StickyPanel>

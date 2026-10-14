@@ -148,6 +148,61 @@ six under the 200 KB budget at good quality. The CSS `filter: grayscale(1)` stay
 comes from, and the build fails if that figure is not literally inside the row's exact words. So a
 re-read that changes a source's wording stops the build instead of publishing a stale number.
 
+## Handoff (written 2026-10-14, when the project moved off iCloud)
+
+**The project now lives in `~/dev/desk-ready`. Work there, not on the Desktop.**
+
+### Why it moved
+`~/Desktop` syncs to iCloud Drive, and with the disk at 100% macOS began evicting file contents.
+Evicted files still show their full size in `ls` but read as **zero bytes**. That is what caused
+`npm error Invalid package.json: Unexpected end of JSON input` (the file was not corrupt, it read
+empty), a `next build` that took 22.6 minutes instead of 12 seconds, load averages near 300, and
+`grep` finding nothing in files that plainly had content. Nothing was lost: `brctl download` plus a
+`killall bird cloudd` restored all but 17 files, and those were regenerated here.
+
+Regenerated rather than recovered: `web/app/layout.tsx`, `web/app/globals.css` (both rewritten from
+the working versions), and `data/reference/pff_tariffs.csv` (**re-derived verbatim** from
+`sources/pdfs/ODFL_100Q_tariff.pdf` p.220 and `Saia_170D_tariff.pdf` pp.109-110 — values confirmed
+identical to the originals: ODFL $3.50/cwt min $45.00, Saia $4.01/cwt min $48.50). The unused
+Next.js starter SVGs and `favicon.ico` were dropped; the site uses `web/public/favicon.svg`.
+The `.claude/skills/` copies did not come across — reinstall per SETUP_SKILLS.md if needed.
+
+**The Desktop copy is left untouched.** Delete it only once this one is confirmed good.
+
+### Where Phase 3 stands
+All three pages build, typecheck and export cleanly. Still to finish before Checkpoint 3:
+
+- **The horizontal-reveal fix is written but not yet confirmed on screen.** The supplied component
+  used `gsap.from(...)` with `toggleActions: "play none none reverse"`, which sets elements to
+  opacity 0 at build time and only restores them if the trigger fires — card text was measured
+  stuck at `opacity: 0.2339`, with the masked SplitText title lines translated outside their clip
+  box. Rewritten content-first with `fromTo` + `immediateRender: false` and no reversing.
+  **Rule for this repo: an element must never depend on an animation firing in order to be
+  readable.** Needs a visual pass at desktop and 390 px.
+- Screenshots into `screenshots/`, listed here.
+- The outside-facts list with SOURCES rows for Checkpoint 3.
+
+### Things found and fixed along the way
+- The brief page carried an **unsourced claim** — "Ownership-change fraud was the single largest
+  reported category". SOURCES row 22 says only that it "accounted for 25.6% of reported incidents
+  in Q2"; "largest category" was an inference. Replaced with the row's exact words.
+- `1,058 days below 10 °F` was hard-typed on the winter page. Now read from ledger H11b.
+
+### H12 and the savings-claim tension
+H12 was requested as "savings per 100 winter LTL shipments = 100 × H6 × the Item 810 minimum
+charge". It is computed in SQL and pandas and sits in the ledger: **$600.00** (Old Dominion) and
+**$646.67** (Saia).
+
+CLAUDE.md says the winter tool "makes NO savings claim" and that any money figure "lives only in a
+calculator where the reader types their own inputs". A fixed dollar saving printed on the winter
+page would break both. It is therefore presented as an **illustrative calculation the reader
+drives**: the shipment count is an input defaulting to 100 (so the default equals the ledger), the
+word used is "illustrative" rather than "savings", and all four assumptions are listed beside it —
+even spread across city-weeks, the minimum charge applying at all (it only binds below roughly
+1,286 lb at ODFL's $3.50/cwt), protect-from-freeze being bought on every shipment to begin with,
+and the 10% weekly threshold being a reader choice. It uses no Uber Freight figure. **Sofia can
+overrule this framing; the ledger value is unaffected either way.**
+
 ## Open questions
 - Ask Eden: does the Masterbuilders team plan winter protect-from-freeze loads, and how is it decided today?
 - Which destination cities matter most for that account? Swap the city list if Eden shares anything.

@@ -135,7 +135,7 @@ export function HeatMap({
         </div>
       </div>
 
-      <div className="mt-8 overflow-x-auto">
+      <div className="mt-8 min-w-0 max-w-full overflow-x-auto">
         <svg
           viewBox={`0 0 ${W} ${H}`}
           className="h-auto w-full min-w-[760px]"

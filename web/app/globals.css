@@ -123,6 +123,24 @@ body {
     text-decoration-color: currentColor;
   }
 
+  /* On the dark panels the grey source colour drops to about 3.6:1, below AA
+     for small text. Lift it to a white tint (~9:1) instead. */
+  .on-dark .source {
+    color: rgb(255 255 255 / 0.72);
+  }
+
+  .on-dark .source a {
+    text-decoration-color: rgb(255 255 255 / 0.45);
+  }
+
+  .on-dark .source a:hover {
+    color: var(--color-paper);
+  }
+
+  .on-dark .marker {
+    color: rgb(255 255 255 / 0.65);
+  }
+
   /* Hairline button, after the reference's outlined style. */
   .btn {
     display: inline-flex;

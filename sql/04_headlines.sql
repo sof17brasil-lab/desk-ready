@@ -7,7 +7,7 @@
 -- (eligible_then_now), while the now-window numbers only need the now window
 -- (eligible_now). See sql/02_clean.sql.
 
-CREATE OR REPLACE TABLE headlines AS
+CREATE OR REPLACE TABLE headlines_core AS
 WITH p AS (SELECT * FROM params),
 hp AS (
     SELECT s.* FROM station_period_product s, p WHERE s.product_id = p.headline_product
@@ -105,3 +105,32 @@ SELECT 'H11b_days_below_10f_total',
        CAST(count(*) AS DOUBLE),
        'now window: total recorded days below 10 F across cities; checks the per-city table'
 FROM severe_cold_now;
+
+-- H12: an ILLUSTRATIVE arithmetic result, not a measurement and not a forecast.
+--
+--   100 shipments x H6 (share of city-weeks the data rule would not heat)
+--                 x the carrier's published Item 810 MINIMUM charge
+--
+-- It rests on two assumptions the site must state wherever it appears:
+--   1. the 100 shipments are spread evenly across the analysed city-weeks, and
+--   2. every one of them would otherwise be billed the published MINIMUM charge
+--      (true only for light shipments: at ODFL's $3.50 per cwt the minimum binds
+--      below about 1,286 lb).
+-- It is not an Uber Freight figure, and no Uber Freight figure is used to derive
+-- it. Both inputs are public: our own measured H6 and a published LTL tariff.
+CREATE OR REPLACE TABLE headlines AS
+SELECT * FROM headlines_core
+UNION ALL
+SELECT 'H12_illustrative_per_100_shipments_odfl',
+       100.0
+         * (SELECT value FROM headlines_core WHERE metric_id = 'H6_share_city_weeks_not_needing_heat')
+         * (SELECT CAST(minimum_charge AS DOUBLE) FROM pff_tariffs WHERE carrier ILIKE '%Dominion%'),
+       CAST((SELECT count(*) FROM eligible_now) AS DOUBLE),
+       'illustrative: 100 shipments x H6 x ODFL Item 810 minimum charge, assuming even spread and that the minimum applies'
+UNION ALL
+SELECT 'H12b_illustrative_per_100_shipments_saia',
+       100.0
+         * (SELECT value FROM headlines_core WHERE metric_id = 'H6_share_city_weeks_not_needing_heat')
+         * (SELECT CAST(minimum_charge AS DOUBLE) FROM pff_tariffs WHERE carrier ILIKE '%Saia%'),
+       CAST((SELECT count(*) FROM eligible_now) AS DOUBLE),
+       'illustrative: 100 shipments x H6 x Saia Item 810 minimum charge, assuming even spread and that the minimum applies';

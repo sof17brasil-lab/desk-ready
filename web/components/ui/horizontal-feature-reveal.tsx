@@ -70,14 +70,20 @@ export default function HorizontalFeatureReveal({
       // Measure only once the card images have loaded. Their height sets the
       // track width, so building the pin before they decode gives ScrollTrigger
       // a stale start and end and the section scrolls past without pinning.
-      await Promise.all(
-        [...el.querySelectorAll("img")].map((img) =>
-          img.complete ? Promise.resolve() : new Promise<void>((r) => {
-            img.addEventListener("load", () => r(), { once: true });
-            img.addEventListener("error", () => r(), { once: true });
-          }),
+      await Promise.race([
+        Promise.all(
+          [...el.querySelectorAll("img")].map((img) =>
+            img.complete && img.naturalWidth > 0
+              ? Promise.resolve()
+              : new Promise<void>((r) => {
+                  img.addEventListener("load", () => r(), { once: true });
+                  img.addEventListener("error", () => r(), { once: true });
+                }),
+          ),
         ),
-      );
+        // Never block setup indefinitely on a stalled image.
+        new Promise<void>((r) => setTimeout(r, 3000)),
+      ]);
       if (cancelled) return;
 
       const ctx = gsap.context(() => {
@@ -193,7 +199,7 @@ export default function HorizontalFeatureReveal({
     <section ref={rootRef} id={sectionId} className="relative z-10 w-full">
       <div className="feature-viewport w-full overflow-hidden">
         <div
-          className="feature-track flex w-max gap-(--card-gap) px-4 max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:gap-12 max-[1025px]:px-0"
+          className="feature-track flex w-max gap-(--card-gap) px-4 max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:gap-12"
           style={{ "--card-gap": `${cardGap}vw` } as CSSProperties}
         >
           {cards.map((card, i) => (
@@ -207,7 +213,9 @@ export default function HorizontalFeatureReveal({
                   src={card.image}
                   alt={card.imageAlt}
                   className="feature-img photo h-full w-full object-cover"
-                  loading="lazy"
+                  // Not lazy: the pin distance is measured from these, and an
+                  // off-screen lazy image never fires `load`.
+                  loading="eager"
                 />
               </div>
 

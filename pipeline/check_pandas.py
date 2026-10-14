@@ -27,6 +27,7 @@ def headlines(root: Path) -> tuple[dict, dict]:
     """Return (values, n_stations): the headline value and sample size per metric."""
     params = json.loads((root / "config/params.json").read_text())
     products = pd.read_csv(root / "data/reference/products.csv")
+    tariffs = pd.read_csv(root / "data/reference/pff_tariffs.csv")
 
     raw = load_raw(root)
     raw = raw[raw["qflag"].str.strip() == ""].copy()
@@ -125,6 +126,18 @@ def headlines(root: Path) -> tuple[dict, dict]:
     )
     sev["days_below_10f_per_winter"] = sev["days_below_10f"] / sev["n_seasons"]
 
+    # H12: illustrative arithmetic, not a measurement. 100 shipments x H6 x the
+    # carrier's published Item 810 MINIMUM charge. Assumes the shipments are
+    # spread evenly across the analysed city-weeks and that each would otherwise
+    # be billed the minimum. See the comment block in sql/04_headlines.sql.
+    h6 = float(1 - (wk >= thr).mean()) if len(wk) else float("nan")
+
+    def min_charge(name: str) -> float:
+        row = tariffs[tariffs["carrier"].str.contains(name, case=False, na=False)]
+        if row.empty:
+            raise SystemExit(f"pff_tariffs.csv has no carrier matching {name!r}")
+        return float(row.iloc[0]["minimum_charge"])
+
     return {
         "H1_stations_now_window": float(len(eligible_now)),
         "H1b_stations_then_vs_now": float(len(eligible_then_now)),
@@ -139,6 +152,8 @@ def headlines(root: Path) -> tuple[dict, dict]:
         "H10_station_days_then_window": days(thendays),
         "H11_cities_any_day_below_10f": float((sev["days_below_10f"] > 0).sum()),
         "H11b_days_below_10f_total": float(sev["days_below_10f"].sum()),
+        "H12_illustrative_per_100_shipments_odfl": 100.0 * h6 * min_charge("Dominion"),
+        "H12b_illustrative_per_100_shipments_saia": 100.0 * h6 * min_charge("Saia"),
     }, {
         "H1_stations_now_window": float(len(eligible_now)),
         "H1b_stations_then_vs_now": float(len(eligible_then_now)),
@@ -153,6 +168,8 @@ def headlines(root: Path) -> tuple[dict, dict]:
         "H10_station_days_then_window": float(thendays["station_id"].nunique()),
         "H11_cities_any_day_below_10f": float(len(sev)),
         "H11b_days_below_10f_total": float(len(sev)),
+        "H12_illustrative_per_100_shipments_odfl": float(len(eligible_now)),
+        "H12b_illustrative_per_100_shipments_saia": float(len(eligible_now)),
     }
 
 

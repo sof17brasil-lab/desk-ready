@@ -112,7 +112,10 @@ export interface SourceRow {
   row: number;
   source: string;
   date: string;
+  /** The raw SOURCES.md cell, including its quote marks and any note. */
   exact_words: string;
+  /** Just the quoted phrase, no quote marks: the site adds its own. */
+  quoted: string;
   status: string;
   link: string;
 }

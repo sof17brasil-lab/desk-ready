@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { IllustrativeSaving } from "@/components/calculators/illustrative-saving";
 import { ColdestStrips } from "@/components/charts/coldest-strips";
 import { Quote, Section, SectionHead, Stat } from "@/components/site/bits";
 import HorizontalFeatureReveal, { type FeatureCard } from "@/components/ui/horizontal-feature-reveal";
@@ -129,6 +130,10 @@ const strips = laneCities
   })
   .sort((a, b) => b.daysBelow10 - a.daysBelow10);
 
+// The temperature in Saia's published Item 810 condition C. Distinct from
+// params.severe_tmin_f (20 °F), which is our own rare-but-severe assumption.
+const SAIA_GATE_F = 10;
+
 const saia = tariffs.find((t) => t.carrier.toLowerCase().includes("saia"))!;
 const odfl = tariffs.find((t) => t.carrier.toLowerCase().includes("dominion"))!;
 
@@ -240,143 +245,170 @@ export default function WinterPage() {
           notHeated: h("H6_share_city_weeks_not_needing_heat").value,
         }}
         tariffs={tariffInfo}
-        severeTminF={params.severe_tmin_f}
+        // Saia Item 810's own gate, not the rare-but-severe assumption.
+        tariffGateF={SAIA_GATE_F}
         headlineProductId={params.headline_product}
         h2={{ value: h("H2_median_change_risk_days_per_winter").value, n: h("H2_median_change_risk_days_per_winter").n_stations }}
         h3={{ value: h("H3_share_stations_fewer_risk_days").value, n: h("H3_share_stations_fewer_risk_days").n_stations }}
         climateQuote={<Quote row={quote(13)} />}
-      />
-
-      {/* 04 · No lane is exempt */}
-      <Section id="no-lane-exempt" tone="dark">
-        <SectionHead
-          index={4}
-          total={6}
-          tone="dark"
-          title="No lane is exempt"
-          lede={
-            <>
-              Every one of the {fmtInt(H1.value)} cities has had a daily low at or below{" "}
-              {params.severe_tmin_f} °F in the last 10 winters — Houston included.
-            </>
-          }
-        />
-
-        <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-16">
-          <div>
-            <Stat
-              figure={`${fmtInt(H11.value)} of ${fmtInt(H1.value)}`}
-              label={`cities have recorded a daily low below ${params.severe_tmin_f} °F in the last 10 winters`}
-              source={
+        // 04 · No lane is exempt. Passed in so the explorer renders it between
+        // sections 03 and 05, keeping the numbered sections in reading order.
+        noLaneExemptSection={
+          <Section id="no-lane-exempt" tone="dark">
+            <SectionHead
+              index={4}
+              total={6}
+              tone="dark"
+              title="No lane is exempt"
+              lede={
                 <>
-                  NOAA GHCN-Daily · 15 cities · 10 winters each · ledger H11, n ={" "}
-                  {fmtInt(H11.n_stations)}
+                  Every one of the {fmtInt(H1.value)} cities has had a daily low at or below{" "}
+                  {params.severe_tmin_f} °F in the last 10 winters — Houston included.
                 </>
               }
             />
-            <p className="mt-8 text-[0.9375rem] leading-relaxed text-white/80">
-              The original screen looked for cities where cold is <em>rare</em> but severe: under{" "}
-              {(params.rare_share_max * 100).toFixed(0)}% of winter days breaking the rule, yet at
-              least one day at or below {params.severe_tmin_f} °F. It returns{" "}
-              <strong>{fmtInt(H7.value)} cities</strong> — not because the cold is mild, but
-              because the severity half passes <strong>everywhere</strong>. Houston comes closest
-              to &ldquo;rare&rdquo; and still misses, at 5.4% of winter days.
-            </p>
-            <p className="mt-5 text-[0.9375rem] leading-relaxed text-white/80">
-              Plan by the worst week, not the average.
-            </p>
-          </div>
 
-          <div className="bg-paper p-6 text-ink sm:p-8">
-            <ColdestStrips
-              strips={strips}
-              productLine={headline.min_safe_f}
-              productLabel={`${headline.min_safe_f} °F`}
-              severeLine={params.severe_tmin_f}
-            />
-            <p className="source mt-6 border-t border-line pt-4">
-              Each dot is the coldest recorded daily low of one winter. Filled dots are at or below{" "}
-              {params.severe_tmin_f} °F. Dashed line: the {headline.example_product} rule (
-              {headline.min_safe_f} °F). Solid line: {params.severe_tmin_f} °F. NOAA GHCN-Daily ·
-              15 cities · 10 winters each.
-            </p>
-          </div>
-        </div>
-
-        {/* The tariff floor, paired with H11. */}
-        <div className="mt-16 border-t border-white/20 pt-10">
-          <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <p className="marker text-white/60">What the tariff says</p>
-              <p className="display display-md mt-4 max-w-[20ch]">
-                The published service has a floor.
-              </p>
-              <p className="mt-5 max-w-[52ch] text-[0.9375rem] leading-relaxed text-white/80">
-                {saia.carrier} provides Protect from Freezing Service only when each of several
-                conditions is met. One of them is a temperature gate:
-              </p>
-              <blockquote className="mt-5 border-l-2 border-white/40 pl-4 text-[0.9375rem] italic">
-                &ldquo;Outside temperature is forecast to be 10 degrees Fahrenheit or higher&rdquo;
-              </blockquote>
-              <p className="source mt-3 text-white/60">
-                <a href={saia.source_url} target="_blank" rel="noopener noreferrer">
-                  {saia.tariff}, Item {saia.item}
-                </a>
-                , eff. {saia.effective_date}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-[0.9375rem] leading-relaxed text-white/80">
-                On the coldest days in some lanes, published LTL protect-from-freeze may not be
-                available. That is a reason to plan a heated truckload or an equipment backup ahead
-                of time, rather than to find out on the day.
-              </p>
-              <div className="mt-6 border border-white/25 p-5">
-                <p className="marker text-white/60">Read this carefully</p>
-                <p className="mt-2 text-sm leading-relaxed text-white/75">
-                  The tariff condition is written on a <strong>forecast</strong>. The temperatures
-                  on this page are <strong>recorded daily lows</strong> from past winters. These
-                  records say how often a lane has run below the gate; they do not predict any
-                  future day, and they do not say the service will be refused.
+            <div className="mt-12 grid min-w-0 gap-10 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-16">
+              <div>
+                <Stat
+                  tone="dark"
+                  figure={`${fmtInt(H11.value)} of ${fmtInt(H1.value)}`}
+                  label={`cities have recorded a daily low below ${params.severe_tmin_f} °F in the last 10 winters`}
+                  source={
+                    <>
+                      NOAA GHCN-Daily · 15 cities · 10 winters each · ledger H11, n ={" "}
+                      {fmtInt(H11.n_stations)}
+                    </>
+                  }
+                />
+                <p className="mt-8 text-[0.9375rem] leading-relaxed text-white/80">
+                  The original screen looked for cities where cold is <em>rare</em> but severe: under{" "}
+                  {(params.rare_share_max * 100).toFixed(0)}% of winter days breaking the rule, yet at
+                  least one day at or below {params.severe_tmin_f} °F. It returns{" "}
+                  <strong>{fmtInt(H7.value)} cities</strong> — not because the cold is mild, but
+                  because the severity half passes <strong>everywhere</strong>. Houston comes closest
+                  to &ldquo;rare&rdquo; and still misses, at 5.4% of winter days.
+                </p>
+                <p className="mt-5 text-[0.9375rem] leading-relaxed text-white/80">
+                  Plan by the worst week, not the average.
                 </p>
               </div>
 
-              <table className="mt-8 w-full border-collapse text-sm">
-                <caption className="source mb-2 text-left text-white/60">
-                  Days below {params.severe_tmin_f} °F per winter, now window
-                </caption>
-                <thead>
-                  <tr className="border-b border-white/25 text-left">
-                    <th scope="col" className="py-2 pr-4 font-medium">City</th>
-                    <th scope="col" className="py-2 pr-4 text-right font-medium">Days/winter</th>
-                    <th scope="col" className="py-2 text-right font-medium">Coldest</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {strips.map((s) => (
-                    <tr key={s.stationId} className="border-b border-white/10">
-                      <th scope="row" className="py-1.5 pr-4 text-left font-normal text-white/85">
-                        {s.city}
-                      </th>
-                      <td className="py-1.5 pr-4 text-right text-white/85">
-                        {s.perWinter.toFixed(1)}
-                      </td>
-                      <td className="py-1.5 text-right text-white/85">
-                        {Math.min(...s.seasons.map((x) => x.coldest_f)).toFixed(1)} °F
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <p className="source mt-3 text-white/55">
-                NOAA GHCN-Daily · 15 cities · 10 winters each · 1,058 days below{" "}
-                {params.severe_tmin_f} °F in total (ledger H11b)
-              </p>
+              <div className="bg-paper p-6 text-ink sm:p-8">
+                <ColdestStrips
+                  strips={strips}
+                  productLine={headline.min_safe_f}
+                  productLabel={`${headline.min_safe_f} °F`}
+                  severeLine={params.severe_tmin_f}
+                />
+                <p className="source mt-6 border-t border-line pt-4">
+                  Each dot is the coldest recorded daily low of one winter. Filled dots are at or below{" "}
+                  {params.severe_tmin_f} °F. Dashed line: the {headline.example_product} rule (
+                  {headline.min_safe_f} °F). Solid line: {params.severe_tmin_f} °F. NOAA GHCN-Daily ·
+                  15 cities · 10 winters each.
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
-      </Section>
+
+            {/* The tariff floor, paired with H11. */}
+            <div className="mt-16 border-t border-white/20 pt-10">
+              <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+                <div>
+                  <p className="marker text-white/60">What the tariff says</p>
+                  <p className="display display-md mt-4 max-w-[20ch]">
+                    The published service has a floor.
+                  </p>
+                  <p className="mt-5 max-w-[52ch] text-[0.9375rem] leading-relaxed text-white/80">
+                    {saia.carrier} provides Protect from Freezing Service only when each of several
+                    conditions is met. One of them is a temperature gate:
+                  </p>
+                  <blockquote className="mt-5 border-l-2 border-white/40 pl-4 text-[0.9375rem] italic">
+                    &ldquo;Outside temperature is forecast to be 10 degrees Fahrenheit or higher&rdquo;
+                  </blockquote>
+                  <p className="source mt-3 text-white/60">
+                    <a href={saia.source_url} target="_blank" rel="noopener noreferrer">
+                      {saia.tariff}, Item {saia.item}
+                    </a>
+                    , eff. {saia.effective_date}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-[0.9375rem] leading-relaxed text-white/80">
+                    On the coldest days in some lanes, published LTL protect-from-freeze may not be
+                    available. That is a reason to plan a heated truckload or an equipment backup ahead
+                    of time, rather than to find out on the day.
+                  </p>
+                  <div className="mt-6 border border-white/25 p-5">
+                    <p className="marker text-white/60">Read this carefully</p>
+                    <p className="mt-2 text-sm leading-relaxed text-white/75">
+                      The tariff condition is written on a <strong>forecast</strong>. The temperatures
+                      on this page are <strong>recorded daily lows</strong> from past winters. These
+                      records say how often a lane has run below the gate; they do not predict any
+                      future day, and they do not say the service will be refused.
+                    </p>
+                  </div>
+
+                  <table className="mt-8 w-full border-collapse text-sm">
+                    <caption className="source mb-2 text-left text-white/60">
+                      Days below {params.severe_tmin_f} °F per winter, now window
+                    </caption>
+                    <thead>
+                      <tr className="border-b border-white/25 text-left">
+                        <th scope="col" className="py-2 pr-4 font-medium">City</th>
+                        <th scope="col" className="py-2 pr-4 text-right font-medium">Days/winter</th>
+                        <th scope="col" className="py-2 text-right font-medium">Coldest</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {strips.map((s) => (
+                        <tr key={s.stationId} className="border-b border-white/10">
+                          <th scope="row" className="py-1.5 pr-4 text-left font-normal text-white/85">
+                            {s.city}
+                          </th>
+                          <td className="py-1.5 pr-4 text-right text-white/85">
+                            {s.perWinter.toFixed(1)}
+                          </td>
+                          <td className="py-1.5 text-right text-white/85">
+                            {Math.min(...s.seasons.map((x) => x.coldest_f)).toFixed(1)} °F
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p className="source mt-3 text-white/55">
+                    NOAA GHCN-Daily · 15 cities · 10 winters each ·{" "}
+                    {fmtInt(h("H11b_days_below_10f_total").value)} days below {params.severe_tmin_f} °F
+                    in total (ledger H11b)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* H12. Deliberately placed after the assumptions above, not as a headline. */}
+            <div className="mt-16 border-t border-white/20 pt-10">
+              <IllustrativeSaving
+                h6={h("H6_share_city_weeks_not_needing_heat").value}
+                thresholdPct={Math.round(params.weekly_heat_threshold * 100)}
+                tariffs={tariffs.map((t) => ({
+                  carrier: t.carrier,
+                  item: t.item,
+                  minimum_charge: t.minimum_charge,
+                  minimum_unit: t.minimum_unit,
+                  effective_date: t.effective_date,
+                  source_url: t.source_url,
+                }))}
+                ledger={{
+                  odfl: h("H12_illustrative_per_100_shipments_odfl").value,
+                  saia: h("H12b_illustrative_per_100_shipments_saia").value,
+                }}
+              />
+            </div>
+          </Section>
+        }
+      />
+
+      {/* 04 renders inside WinterExplorer, between 03 and 05. */}
 
       {/* 05 renders inside WinterExplorer above. 06 below. */}
       <Section id="playbook">
@@ -426,7 +458,7 @@ export default function WinterPage() {
               <>Check whether the lane is forecast below the published service floor. {saia.carrier} provides the service only when &ldquo;Outside temperature is forecast to be 10 degrees Fahrenheit or higher&rdquo;.</>,
               <>Update the receiver with the revised ETA and the protection in place.</>,
               <>Escalate if no heat can be confirmed: line up a heated truckload or hold the load.</>,
-              <>Verify any reroute by phone. &ldquo;{quote(21).exact_words}&rdquo;</>,
+              <>Verify any reroute by phone. &ldquo;{quote(21).quoted}&rdquo;</>,
             ],
             note: (
               <p className="text-sm leading-relaxed">

@@ -60,7 +60,7 @@ export function LoadCheck({
   products,
   threshold,
   tariffs,
-  severeTminF,
+  tariffGateF,
 }: {
   cells: LaneWeek[];
   cities: LaneCity[];
@@ -68,7 +68,9 @@ export function LoadCheck({
   products: { id: string; label: string; minSafeF: number; rule: string }[];
   threshold: number;
   tariffs: TariffInfo[];
-  severeTminF: number;
+  /** The gate in Saia's published Item 810: 10 °F. NOT params.severe_tmin_f
+   *  (20 °F), which is the separate 'rare but severe' assumption. */
+  tariffGateF: number;
 }) {
   const [productId, setProductId] = React.useState(products[0]?.id ?? "");
   const [origin, setOrigin] = React.useState(cities[0]?.stationId ?? "");
@@ -102,7 +104,7 @@ export function LoadCheck({
         : "Not needed on this history";
 
   // Any stop whose coldest recorded day in the last 10 winters was below 10 °F.
-  const belowGate = legs.filter((l) => (l.info?.coldestF ?? 99) < severeTminF);
+  const belowGate = legs.filter((l) => (l.info?.coldestF ?? 99) < tariffGateF);
   const saia = tariffs.find((t) => t.carrier.toLowerCase().includes("saia"));
 
   const charge = num(heatCharge);
@@ -110,7 +112,7 @@ export function LoadCheck({
   const expectedNoHeat = rework !== null && worst ? worst.risk * rework : null;
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16">
+    <div className="grid min-w-0 gap-12 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16">
       <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
         <div>
           <label htmlFor="lc-product" className="block text-sm font-medium">
@@ -292,7 +294,7 @@ export function LoadCheck({
             <p className="mt-3 text-sm leading-relaxed text-deep">
               On this lane, {belowGate.map((l) => l.city).join(" and ")}{" "}
               {belowGate.length === 1 ? "has" : "have"} recorded a daily low below{" "}
-              {severeTminF} °F in the last 10 winters
+              {tariffGateF} °F in the last 10 winters
               {" ("}
               {belowGate.map((l) => `${l.city} ${l.info?.coldestF.toFixed(1)} °F`).join(", ")}
               {")"}. {saia.carrier}&rsquo;s Item {saia.item} provides Protect from Freezing Service

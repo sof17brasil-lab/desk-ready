@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Section, SectionHead } from "@/components/site/bits";
 import {
   briefFacts,
+  h,
   headlines,
   params,
   products,
@@ -32,14 +33,30 @@ const sqlFiles = ["01_load.sql", "02_clean.sql", "03_metrics.sql", "04_headlines
 function readLedger() {
   const raw = fs.readFileSync(path.join(REPO, "ledger/numbers_ledger.csv"), "utf8").trim();
   const [head, ...lines] = raw.split("\n");
-  const cols = head.split(",");
+  const cols = head.split(",").map((c) => c.replace(/^"|"$/g, ""));
+  // The basis column contains commas and is therefore quoted by pandas, so the
+  // file needs real CSV parsing rather than a plain split.
+  const parse = (line: string) => {
+    const out: string[] = [];
+    let cur = "";
+    let quoted = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (quoted) {
+        if (ch === '"') {
+          if (line[i + 1] === '"') { cur += '"'; i++; } else quoted = false;
+        } else cur += ch;
+      } else if (ch === '"') quoted = true;
+      else if (ch === ",") { out.push(cur); cur = ""; }
+      else cur += ch;
+    }
+    out.push(cur);
+    return out;
+  };
   return lines.map((line) => {
-    // No quoted commas in this file; the basis column is last and safe to join.
-    const parts = line.split(",");
+    const parts = parse(line);
     const row: Record<string, string> = {};
-    cols.forEach((c, i) => {
-      row[c] = i === cols.length - 1 ? parts.slice(i).join(",") : parts[i];
-    });
+    cols.forEach((c, i) => { row[c] = parts[i] ?? ""; });
     return row;
   });
 }
@@ -48,7 +65,9 @@ const ledger = readLedger();
 const num = (v: string) => {
   const n = Number(v);
   if (!Number.isFinite(n)) return v;
-  return Number.isInteger(n) ? n.toLocaleString("en-US") : n.toFixed(6).replace(/0+$/, "");
+  if (Number.isInteger(n)) return n.toLocaleString("en-US");
+  // Trim trailing zeros, and the trailing point they can leave behind.
+  return n.toFixed(6).replace(/0+$/, "").replace(/\.$/, "");
 };
 
 export default function MethodPage() {
@@ -89,7 +108,7 @@ export default function MethodPage() {
           Every station ID was checked against NOAA&rsquo;s own station list before anything was
           downloaded; all 15 matched their city.
         </p>
-        <div className="mt-5 overflow-x-auto">
+        <div className="mt-5 min-w-0 max-w-full overflow-x-auto">
           <table className="w-full min-w-[720px] border-collapse text-sm">
             <caption className="sr-only">Stations used, with NOAA names and coverage</caption>
             <thead>
@@ -152,7 +171,7 @@ export default function MethodPage() {
         </div>
 
         <h3 className="mt-12 text-lg font-semibold">Published LTL charges</h3>
-        <div className="mt-4 overflow-x-auto">
+        <div className="mt-4 min-w-0 max-w-full overflow-x-auto">
           <table className="w-full min-w-[680px] border-collapse text-sm">
             <caption className="sr-only">Protect-from-freezing charges read from published tariffs</caption>
             <thead>
@@ -183,7 +202,7 @@ export default function MethodPage() {
         </div>
 
         <h3 className="mt-12 text-lg font-semibold">Published reports and pages</h3>
-        <div className="mt-4 overflow-x-auto">
+        <div className="mt-4 min-w-0 max-w-full overflow-x-auto">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <caption className="sr-only">Every outside fact used on the site</caption>
             <thead>
@@ -235,6 +254,7 @@ export default function MethodPage() {
             ["Weekly heat threshold", `An assumption, not a finding: heat a city-week if at least ${(params.weekly_heat_threshold * 100).toFixed(0)}% of its days are risk days. The site exposes this as a slider. At 15% the data rule skips 18.2% of city-weeks, at 20% it skips 23.0%, at 30% it skips 33.0%.`],
             ["Rare but severe", `An assumption: risk share below ${(params.rare_share_max * 100).toFixed(0)}% in the now window, with at least one day at or below ${params.severe_tmin_f} °F. It returns zero cities, because the severity half passes for all 15.`],
             ["10 °F", `Not our threshold. It is the gate in Saia's published Item 810, which provides the service only when the outside temperature is "forecast to be 10 degrees Fahrenheit or higher". We count recorded daily lows below it.`],
+            ["H12, the illustrative figure", `shipments × H6 × the carrier's published Item 810 minimum charge. At 100 shipments: 100 × ${h("H6_share_city_weeks_not_needing_heat").value.toFixed(6)} × $${Number(tariffs.find((t) => /Dominion/i.test(t.carrier))!.minimum_charge).toFixed(2)} = $${h("H12_illustrative_per_100_shipments_odfl").value.toFixed(2)} (Old Dominion), and × $${Number(tariffs.find((t) => /Saia/i.test(t.carrier))!.minimum_charge).toFixed(2)} = $${h("H12b_illustrative_per_100_shipments_saia").value.toFixed(2)} (Saia). It is arithmetic, not a measurement: it assumes the shipments are spread evenly across the analysed city-weeks, that each would otherwise be billed the minimum charge (which only binds on light shipments — above roughly 1,286 lb at Old Dominion's $3.50 per cwt the real charge is higher), and that protect-from-freezing was being bought on all of them. It uses no Uber Freight figure and is not a savings claim.`],
           ].map(([term, def]) => (
             <div key={term}>
               <dt className="text-sm font-semibold">{term}</dt>
@@ -289,7 +309,7 @@ export default function MethodPage() {
             : "MISMATCH — do not trust this build."}
         </p>
 
-        <div className="mt-6 overflow-x-auto">
+        <div className="mt-6 min-w-0 max-w-full overflow-x-auto">
           <table className="w-full min-w-[860px] border-collapse text-sm">
             <caption className="sr-only">SQL value against pandas value for every headline metric</caption>
             <thead>

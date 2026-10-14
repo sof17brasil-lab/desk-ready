@@ -43,12 +43,14 @@ export function Stat({
   label,
   source,
   size = "md",
+  tone = "light",
   className,
 }: {
   figure: ReactNode;
   label: ReactNode;
   source?: ReactNode;
   size?: "sm" | "md" | "lg";
+  tone?: "light" | "dark";
   className?: string;
 }) {
   const sizes = {
@@ -59,7 +61,9 @@ export function Stat({
   return (
     <div className={className}>
       <p className={cn("figure leading-[0.95]", sizes[size])}>{figure}</p>
-      <p className="mt-2 max-w-[34ch] text-sm leading-snug text-deep">{label}</p>
+      <p className={cn("mt-2 max-w-[34ch] text-sm leading-snug", tone === "dark" ? "text-white/85" : "text-deep")}>
+        {label}
+      </p>
       {source && <div className="source mt-2 max-w-[48ch]">{source}</div>}
     </div>
   );
@@ -96,7 +100,7 @@ export function Quote({ row, className }: { row: SourceRow; className?: string }
   return (
     <figure className={className}>
       <blockquote className="border-l-2 border-current/25 pl-4 text-[0.9375rem] leading-relaxed">
-        &ldquo;{row.exact_words}&rdquo;
+        &ldquo;{row.quoted}&rdquo;
       </blockquote>
       <figcaption className="source mt-2 pl-4">
         <a href={row.link} target="_blank" rel="noopener noreferrer">

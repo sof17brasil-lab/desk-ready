@@ -31,6 +31,22 @@ def norm(t: str) -> str:
     return re.sub(r"\s+", " ", t).strip().lower()
 
 
+
+def quoted_span(cell: str) -> str:
+    """The quoted phrase inside a SOURCES cell, without its quote marks.
+
+    Cells are written with the source's words in quotes, sometimes followed by a
+    note ("... (curly apostrophe on page)") or joined with ' ; '. The site adds
+    its own typographic quotes, so it needs the bare phrase; printing the raw
+    cell produced doubled quote marks on the page. Falls back to the whole cell
+    when there is nothing quoted.
+    """
+    parts = re.findall(r'"([^"]+)"', cell)
+    if not parts:
+        return cell.strip()
+    return " ; ".join(parts)
+
+
 def parse_sources() -> dict[int, dict]:
     """Read the numbered rows of the 'Facts we may use on the site' table."""
     rows: dict[int, dict] = {}
@@ -48,7 +64,8 @@ def parse_sources() -> dict[int, dict]:
         else:
             last_link = link
         rows[int(n)] = {"row": int(n), "source": source, "date": date,
-                        "exact_words": words, "status": status, "link": link}
+                        "exact_words": words, "quoted": quoted_span(words),
+                        "status": status, "link": link}
     return rows
 
 

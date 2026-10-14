@@ -46,7 +46,7 @@ export function Dumbbell({
   const ticks = [0, 30, 60, 90, 120, 150].filter((t) => t <= max * 1.02);
 
   return (
-    <div>
+    <div className="min-w-0">
       <fieldset className="mb-6">
         <legend className="marker mb-2">Product storage rule</legend>
         <div className="flex flex-wrap gap-2">
@@ -64,7 +64,7 @@ export function Dumbbell({
         </div>
       </fieldset>
 
-      <div className="overflow-x-auto">
+      <div className="min-w-0 max-w-full overflow-x-auto">
         <svg
           viewBox={`0 0 ${W} ${H}`}
           className="h-auto w-full min-w-[640px]"
@@ -122,7 +122,7 @@ export function Dumbbell({
       {/* Table alternative: the chart is never the only way to read the data. */}
       <details className="mt-6">
         <summary className="cursor-pointer text-sm font-medium">Show as a table</summary>
-        <div className="mt-3 overflow-x-auto">
+        <div className="mt-3 min-w-0 max-w-full overflow-x-auto">
           <table className="w-full min-w-[460px] border-collapse text-sm">
             <caption className="sr-only">
               Risk days per winter by city, then and now, with the change
