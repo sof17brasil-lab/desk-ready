@@ -1,0 +1,263 @@
+@import "tailwindcss";
+
+/* Automatic source detection misses these from app/globals.css, so the utility
+   classes used in components/ and lib/ were not being generated. */
+@source "../app";
+@source "../components";
+@source "../lib";
+
+/*
+  Desk Ready — black, white and grey only (CLAUDE.md).
+  Structure borrowed from mvplogistics.eu (see notes.md): two values carry the
+  whole page, one near-black and one near-white grey. Their deep navy #1F1F61
+  maps to #000000 here; their #F4F4F7 maps to #F6F6F6.
+*/
+@theme {
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-surface: #f6f6f6;
+  --color-line: #e2e2e2;
+  --color-mute: #afafaf;
+  --color-quiet: #6b6b6b;
+  --color-deep: #333333;
+
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  /* Reference rhythm: a 40px base with an 80px step for major breaks. */
+  --spacing-section: 5rem;
+  --spacing-section-lg: 10rem;
+}
+
+:root {
+  --measure: 64ch;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
+  /* Numbers must never jitter as they count up or as a slider moves. */
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+  Custom classes live in the components layer so Tailwind utilities still win.
+  Without this, `.btn { display: inline-flex }` beats `.md:hidden` (same
+  specificity, defined later) and the phone menu button shows on desktop.
+*/
+@layer components {
+  /* Every figure in the site is set in tabular lining figures. */
+  .figure {
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+
+  /*
+    Display type. The reference paces its pages with section headings far larger
+    than the hero, set below a 1.0 line-height. Kept here; set in Inter and in
+    sentence case rather than its condensed all-caps (notes.md explains why).
+  */
+  .display {
+    font-weight: 650;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+
+  .display-xl {
+    font-size: clamp(2.75rem, 7.5vw, 6.5rem);
+  }
+
+  .display-lg {
+    font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+  }
+
+  .display-md {
+    font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+    line-height: 1;
+  }
+
+  /* Small structural markers: the one place all-caps is used. */
+  .marker {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-quiet);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+    line-height: 1.5;
+    max-width: 48ch;
+    color: var(--color-deep);
+  }
+
+  /* Source line under every number and chart. Grey, small, always present. */
+  .source {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--color-quiet);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .source a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--color-mute);
+  }
+
+  .source a:hover {
+    color: var(--color-ink);
+    text-decoration-color: currentColor;
+  }
+
+  /* Hairline button, after the reference's outlined style. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.6875rem 1.5rem;
+    border: 1px solid var(--color-ink);
+    border-radius: 2px;
+    font-size: 0.875rem;
+    font-weight: 550;
+    letter-spacing: 0.01em;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease;
+  }
+
+  .btn:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn-solid {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn-solid:hover {
+    background: var(--color-deep);
+    color: var(--color-paper);
+  }
+
+  .on-dark .btn {
+    border-color: var(--color-paper);
+    color: var(--color-paper);
+  }
+
+  .on-dark .btn:hover {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  /* Visible focus everywhere, never removed. */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: 1px;
+  }
+
+  .on-dark :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline-color: var(--color-paper);
+  }
+
+  /* Photos render in black and white (design/MEDIA_LIST.md). The files are
+     already greyscale; this guards against a colour file slipping in. */
+  .photo {
+    filter: grayscale(1);
+  }
+
+  /* Form controls, monochrome. */
+  .field {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 2px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .field:focus {
+    border-color: var(--color-ink);
+  }
+
+  input[type="range"] {
+    accent-color: #000000;
+    width: 100%;
+    min-height: 44px;
+    cursor: pointer;
+  }
+
+  /* Method page: SQL listings. */
+  .code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    line-height: 1.7;
+    tab-size: 2;
+  }
+}
+
+/* Marquee band. Pauses on hover and focus, and holds still for reduced motion. */
+@keyframes deskready-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: deskready-marquee 48s linear infinite;
+}
+
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/*
+  prefers-reduced-motion: the truck parks, smooth scroll and pinning stop, the
+  stacking cards flatten, and the marquee holds still. CLAUDE.md requires the
+  page to read as an ordinary document in this mode.
+*/
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee-track {
+    animation: none;
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

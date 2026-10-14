@@ -1,0 +1,19 @@
+# Generated / reproducible
+web/node_modules/
+web/.next/
+web/out/
+.turbo/
+*.tsbuildinfo
+.env*.local
+
+# NOAA raw files: large, public, re-downloadable. See data/README.md.
+data/raw/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS
+.DS_Store

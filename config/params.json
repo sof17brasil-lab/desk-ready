@@ -1,0 +1,20 @@
+{
+  "season_start_month": 11,
+  "season_end_month": 3,
+  "then_first_season": 1991,
+  "then_last_season": 2000,
+  "now_first_season": 2016,
+  "now_last_season": 2025,
+  "min_season_coverage": 0.90,
+  "min_valid_seasons_per_period": 8,
+  "headline_product": "pz80",
+  "weekly_heat_threshold": 0.10,
+  "rare_share_max": 0.05,
+  "severe_tmin_f": 20,
+  "_notes": {
+    "season": "A season is Nov 1 to Mar 31, labeled by the year it starts (2025 = Nov 2025 to Mar 2026).",
+    "then_now": "Two equal 10-winter windows with no overlap. Change only with Sofia's approval.",
+    "weekly_heat_threshold": "An ASSUMPTION the site shows and lets the reader change: heat a city-week if at least this share of its days hit the product's risk rule.",
+    "rare_share_max / severe_tmin_f": "ASSUMPTIONS for the 'rare but severe' flag: risk share below rare_share_max in the 'now' window, but at least one day at or below severe_tmin_f."
+  }
+}

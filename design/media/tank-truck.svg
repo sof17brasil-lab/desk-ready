@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 420" width="1600" height="420" role="img" aria-label="Side view of a tank truck">
+  <title>Tank truck (original illustration, no brand)</title>
+  <ellipse cx="800" cy="392" rx="760" ry="14" fill="#000" opacity="0.08"/>
+  <rect x="160" y="300" width="1240" height="22" rx="4" fill="#2B2F36"/>
+  <rect x="150" y="96" width="980" height="196" rx="98" fill="#C9CED6"/>
+  <rect x="150" y="96" width="980" height="196" rx="98" fill="none" stroke="#9AA1AC" stroke-width="4"/>
+  <rect x="170" y="128" width="940" height="14" rx="7" fill="#E7EAEE"/>
+  <g fill="none" stroke="#9AA1AC" stroke-width="4">
+    <line x1="400" y1="98" x2="400" y2="290"/>
+    <line x1="640" y1="98" x2="640" y2="290"/>
+    <line x1="880" y1="98" x2="880" y2="290"/>
+  </g>
+  <g fill="#8C939E">
+    <rect x="270" y="78" width="60" height="20" rx="4"/>
+    <rect x="510" y="78" width="60" height="20" rx="4"/>
+    <rect x="750" y="78" width="60" height="20" rx="4"/>
+    <rect x="990" y="78" width="60" height="20" rx="4"/>
+  </g>
+  <rect x="190" y="70" width="900" height="6" rx="3" fill="#8C939E"/>
+  <rect x="1140" y="250" width="70" height="50" fill="#2B2F36"/>
+  <path d="M1200 300 V150 Q1200 120 1230 120 H1360 Q1395 120 1410 150 L1462 232 Q1472 248 1472 268 V300 Z" fill="#000000"/>
+  <path d="M1250 140 H1352 Q1372 140 1382 158 L1420 226 H1250 Z" fill="#E2E2E2"/>
+  <rect x="1216" y="236" width="250" height="10" rx="5" fill="#333333"/>
+  <rect x="1440" y="270" width="40" height="28" rx="4" fill="#333333"/>
+  <rect x="1182" y="60" width="14" height="190" rx="7" fill="#5B6370"/>
+  <g>
+    <circle cx="300" cy="330" r="46" fill="#1B1E23"/><circle cx="300" cy="330" r="20" fill="#8C939E"/>
+    <circle cx="410" cy="330" r="46" fill="#1B1E23"/><circle cx="410" cy="330" r="20" fill="#8C939E"/>
+    <circle cx="960" cy="330" r="46" fill="#1B1E23"/><circle cx="960" cy="330" r="20" fill="#8C939E"/>
+    <circle cx="1070" cy="330" r="46" fill="#1B1E23"/><circle cx="1070" cy="330" r="20" fill="#8C939E"/>
+    <circle cx="1400" cy="330" r="46" fill="#1B1E23"/><circle cx="1400" cy="330" r="20" fill="#8C939E"/>
+  </g>
+</svg>

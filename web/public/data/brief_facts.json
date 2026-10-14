@@ -1,0 +1,362 @@
+{
+ "facts": [
+  {
+   "id": "acceptance_now",
+   "figure": "78%",
+   "label": "first-tender acceptance, Uber Freight network, Aug 2026",
+   "sources": [
+    {
+     "row": 19,
+     "source": "Uber Freight Q3 Market Update Report",
+     "date": "Sept 2026",
+     "exact_words": "\"Primary tender acceptance in the Uber Freight network rose from 76% in July to 78% in August\"",
+     "status": "Confirmed",
+     "link": "https://insights.uberfreight.com/hubfs/UberFreight_Market_Update_Report.pdf"
+    }
+   ]
+  },
+  {
+   "id": "acceptance_prior",
+   "figure": "90 to 94%",
+   "label": "the prior three years",
+   "sources": [
+    {
+     "row": 20,
+     "source": "Same report",
+     "date": "Sept 2026",
+     "exact_words": "\"well below the 90 to 94% seen in the prior three years\"",
+     "status": "Confirmed",
+     "link": "https://insights.uberfreight.com/hubfs/UberFreight_Market_Update_Report.pdf"
+    }
+   ]
+  },
+  {
+   "id": "bulk_lead_time",
+   "figure": "7 to 10 days",
+   "label": "average bulk lead time, up from 24 to 72 hours",
+   "sources": [
+    {
+     "row": 3,
+     "source": "Uber Freight Q3 Market Update Report",
+     "date": "Sept 2026",
+     "exact_words": "\"Average bulk lead time has moved from 24 to 72 hours to 7 to 10 days.\"",
+     "status": "Confirmed",
+     "link": "https://insights.uberfreight.com/hubfs/UberFreight_Market_Update_Report.pdf"
+    }
+   ]
+  },
+  {
+   "id": "lead_time_ask",
+   "figure": "48 to 72 hours",
+   "label": "lead time to give carriers",
+   "sources": [
+    {
+     "row": 4,
+     "source": "Same report",
+     "date": "Sept 2026",
+     "exact_words": "\"Give carriers 48 to 72 hours of lead time.\"",
+     "status": "Confirmed",
+     "link": "https://insights.uberfreight.com/hubfs/UberFreight_Market_Update_Report.pdf"
+    }
+   ]
+  },
+  {
+   "id": "detention_share",
+   "figure": "39.3%",
+   "label": "of all stops had the driver detained, 2023",
+   "sources": [
+    {
+     "row": 27,
+     "source": "ATRI press release on truck driver detention",
+     "date": "Sept 10, 2024",
+     "exact_words": "\"In 2023, drivers reported being detained in 39.3 percent of all stops.\"",
+     "status": "Confirmed",
+     "link": "https://truckingresearch.org/2024/09/new-research-documents-substantial-financial-and-safety-impacts-from-truck-driver-detention/"
+    }
+   ]
+  },
+  {
+   "id": "detention_cost",
+   "figure": "$3.6B / $11.5B",
+   "label": "direct expenses and lost productivity, industry-wide, 2023",
+   "sources": [
+    {
+     "row": 28,
+     "source": "Same",
+     "date": "Sept 10, 2024",
+     "exact_words": "\"the trucking industry lost $3.6 billion in direct expenses and $11.5 billion in lost productivity from driver detention in 2023.\" (industry-wide, not Uber)",
+     "status": "Confirmed",
+     "link": "https://truckingresearch.org/2024/09/new-research-documents-substantial-financial-and-safety-impacts-from-truck-driver-detention/"
+    }
+   ]
+  },
+  {
+   "id": "hygiene_swing",
+   "figure": "10% or more",
+   "label": "swing in rate evaluations from poor shipping hygiene",
+   "sources": [
+    {
+     "row": 24,
+     "source": "Same page (section \"LTL networks are absorbing demand quickly\")",
+     "date": "Jun 4, 2026",
+     "exact_words": "\"Poor shipping hygiene can swing rate evaluations by 10% or more when carriers assess accounts.\"",
+     "status": "Confirmed",
+     "link": "https://www.uberfreight.com/en-US/blog/q2-freight-market-update-market-pressures-converge-and-create-urgency"
+    }
+   ]
+  },
+  {
+   "id": "fraud_share",
+   "figure": "25.6%",
+   "label": "of reported incidents were ownership-change fraud, Q2",
+   "sources": [
+    {
+     "row": 22,
+     "source": "Same report",
+     "date": "Sept 2026",
+     "exact_words": "\"Ownership-change fraud accounted for 25.6% of reported incidents in Q2\"",
+     "status": "Confirmed",
+     "link": "https://insights.uberfreight.com/hubfs/UberFreight_Market_Update_Report.pdf"
+    }
+   ]
+  },
+  {
+   "id": "winter_otri_2025",
+   "figure": "6.6% to 8.7%",
+   "label": "tender rejections, early Jan 2025 (OTRI)",
+   "sources": [
+    {
+     "row": 32,
+     "source": "Same",
+     "date": "Jan 18, 2025",
+     "exact_words": "Tender rejections (OTRI) \"surged from 6.6% to 8.7% earlier this month\" (early Jan 2025) and \"climbed from 4.2% to 5.4% last January\" (Jan 2024)",
+     "status": "Confirmed",
+     "link": "https://www.freightwaves.com/news/winter-weather-has-been-more-disruptive-to-transportation-than-hurricanes"
+    }
+   ]
+  },
+  {
+   "id": "winter_otri_2024",
+   "figure": "4.2% to 5.4%",
+   "label": "tender rejections, Jan 2024 (OTRI)",
+   "sources": [
+    {
+     "row": 32,
+     "source": "Same",
+     "date": "Jan 18, 2025",
+     "exact_words": "Tender rejections (OTRI) \"surged from 6.6% to 8.7% earlier this month\" (early Jan 2025) and \"climbed from 4.2% to 5.4% last January\" (Jan 2024)",
+     "status": "Confirmed",
+     "link": "https://www.freightwaves.com/news/winter-weather-has-been-more-disruptive-to-transportation-than-hurricanes"
+    }
+   ]
+  },
+  {
+   "id": "detention_speed",
+   "figure": "14.6%",
+   "label": "faster average driving by detained trucks",
+   "sources": [
+    {
+     "row": 29,
+     "source": "Same",
+     "date": "Sept 10, 2024",
+     "exact_words": "\"Trucks that were detained drove 14.6 percent faster on average than trucks that were not detained.\"",
+     "status": "Confirmed",
+     "link": "https://truckingresearch.org/2024/09/new-research-documents-substantial-financial-and-safety-impacts-from-truck-driver-detention/"
+    }
+   ]
+  },
+  {
+   "id": "winter_warming",
+   "figure": "76%",
+   "label": "of U.S. locations where winter is the fastest-warming season",
+   "sources": [
+    {
+     "row": 13,
+     "source": "Climate Central, Climate Matters (NOAA data)",
+     "date": "Jan 28, 2026",
+     "exact_words": "\"Winter (December, January, February) is the fastest-warming season for the majority (76%) of U.S. locations analyzed\"",
+     "status": "Confirmed",
+     "link": "https://www.climatecentral.org/climate-matters/winter-warming-2026"
+    }
+   ]
+  },
+  {
+   "id": "coldest_day_warmed",
+   "figure": "7\u00b0F",
+   "label": "average warming of the coldest day, 242 U.S. locations, 1970-2023",
+   "sources": [
+    {
+     "row": 14,
+     "source": "Same",
+     "date": "Jan 28, 2026",
+     "exact_words": "\"The coldest day of the year has warmed by 7\u00b0F on average across 242 U.S. locations analyzed (1970-2023)\"",
+     "status": "Confirmed",
+     "link": "https://www.climatecentral.org/climate-matters/winter-warming-2026"
+    }
+   ]
+  }
+ ],
+ "quotes": [
+  {
+   "row": 1,
+   "source": "Uber Freight blog, chemical supply chains (Greg Umstead, VP of commercial operations, Uber Freight)",
+   "date": "Aug 1, 2025",
+   "exact_words": "\"A lot of these chemicals are water-based, so if they freeze, they\u2019re compromised.\" (curly apostrophe on page)",
+   "status": "Confirmed",
+   "link": "https://www.uberfreight.com/en-US/blog/building-smarter-chemical-supply-chains-with-rail-bulk-and-intermodal"
+  },
+  {
+   "row": 2,
+   "source": "Same page",
+   "date": "Aug 1, 2025",
+   "exact_words": "\"in a single dashboard enriched with risk scores, live location pings, and weather overlays\"",
+   "status": "Confirmed",
+   "link": "https://www.uberfreight.com/en-US/blog/building-smarter-chemical-supply-chains-with-rail-bulk-and-intermodal"
+  },
+  {
+   "row": 5,
+   "source": "Same report",
+   "date": "Sept 2026",
+   "exact_words": "\"Short-lead tenders are the loads asset carriers reject first when they're rationing capacity.\"",
+   "status": "Confirmed",
+   "link": "https://insights.uberfreight.com/hubfs/UberFreight_Market_Update_Report.pdf"
+  },
+  {
+   "row": 8,
+   "source": "Same sheet",
+   "date": "Oct 2023",
+   "exact_words": "\"Although freezing does not harm this product\" ; \"thaw at 35 \u00b0F (2 \u00b0C) or above\"",
+   "status": "Confirmed (re-read Oct 13, 2026)",
+   "link": "https://assets.ctfassets.net/ctspkgm1yw3s/748sLjbKaK3n3Hvm2TulSf/d5347e788a09b10b15339336159d04a3/MasterAir_AE_90_Data_Sheet.pdf"
+  },
+  {
+   "row": 10,
+   "source": "MasterSure Z 60 product sheet (DAT-0492, 07/23)",
+   "date": "Jul 2023",
+   "exact_words": "\"must be stored at temperatures above 40 \u00b0F (5 \u00b0C)\" ; \"If MasterSure Z 60 admixture freezes, thaw and reconstitute by mechanical agitation\"",
+   "status": "Confirmed (re-read from saved PDF Oct 13, 2026; **URL moved**, see note A)",
+   "link": "https://assets.ctfassets.net/ctspkgm1yw3s/3td3BtkagImVz6ZqX8QCAF/4e34eeade6db28ccd5b8de2bd7450fd0/MasterSure_Z_60_Data_Sheet.pdf"
+  },
+  {
+   "row": 11,
+   "source": "MasterPozzolith 80 product sheet (DAT-0083, 07/23)",
+   "date": "Jul 2023",
+   "exact_words": "\"should be stored above freezing temperatures\" ; \"thaw at 35 \u00b0F (2 \u00b0C) or above and completely reconstitute by mild mechanical agitation\"",
+   "status": "Confirmed (re-read from saved PDF Oct 13, 2026; **URL moved**, see note A)",
+   "link": "https://assets.ctfassets.net/ctspkgm1yw3s/4gKj1RpmVjfFiXRnppRwxW/0b7faaada3201d7eee20cb6f1996c49a/MasterPozzolith_80_Data_Sheet.pdf"
+  },
+  {
+   "row": 13,
+   "source": "Climate Central, Climate Matters (NOAA data)",
+   "date": "Jan 28, 2026",
+   "exact_words": "\"Winter (December, January, February) is the fastest-warming season for the majority (76%) of U.S. locations analyzed\"",
+   "status": "Confirmed",
+   "link": "https://www.climatecentral.org/climate-matters/winter-warming-2026"
+  },
+  {
+   "row": 14,
+   "source": "Same",
+   "date": "Jan 28, 2026",
+   "exact_words": "\"The coldest day of the year has warmed by 7\u00b0F on average across 242 U.S. locations analyzed (1970-2023)\"",
+   "status": "Confirmed",
+   "link": "https://www.climatecentral.org/climate-matters/winter-warming-2026"
+  },
+  {
+   "row": 21,
+   "source": "Same report",
+   "date": "Sept 2026",
+   "exact_words": "\"verify any reroute or payment change by phone on a known number\"",
+   "status": "Confirmed",
+   "link": "https://insights.uberfreight.com/hubfs/UberFreight_Market_Update_Report.pdf"
+  },
+  {
+   "row": 23,
+   "source": "Uber Freight blog, Q2 freight market update",
+   "date": "Jun 4, 2026",
+   "exact_words": "\"increasing costs as rejected shipments move down routing guides\"",
+   "status": "Confirmed",
+   "link": "https://www.uberfreight.com/en-US/blog/q2-freight-market-update-market-pressures-converge-and-create-urgency"
+  },
+  {
+   "row": 25,
+   "source": "Same page, same section",
+   "date": "Jun 4, 2026",
+   "exact_words": "\"Treat detention reduction as a cost lever, not just a service metric.\"",
+   "status": "Confirmed",
+   "link": "https://www.uberfreight.com/en-US/blog/q2-freight-market-update-market-pressures-converge-and-create-urgency"
+  },
+  {
+   "row": 26,
+   "source": "Same page",
+   "date": "Jun 4, 2026",
+   "exact_words": "\"Audit shipping hygiene at key origins, including dock readiness, paper, and detention patterns.\"",
+   "status": "Confirmed",
+   "link": "https://www.uberfreight.com/en-US/blog/q2-freight-market-update-market-pressures-converge-and-create-urgency"
+  },
+  {
+   "row": 30,
+   "source": "Same",
+   "date": "Sept 10, 2024",
+   "exact_words": "\"indicating that truck drivers know which firms and facilities will likely detain them\" (ATRI's interpretation of GPS data; say so)",
+   "status": "Confirmed",
+   "link": "https://truckingresearch.org/2024/09/new-research-documents-substantial-financial-and-safety-impacts-from-truck-driver-detention/"
+  },
+  {
+   "row": 31,
+   "source": "FreightWaves, Zach Strickland",
+   "date": "Jan 18, 2025",
+   "exact_words": "\"Winter weather has been far more disruptive to the U.S. freight market than tropical systems over the past several years.\"",
+   "status": "Confirmed",
+   "link": "https://www.freightwaves.com/news/winter-weather-has-been-more-disruptive-to-transportation-than-hurricanes"
+  },
+  {
+   "row": 35,
+   "source": "Same ODFL Item 810",
+   "date": "eff. Apr 14, 2025",
+   "exact_words": "\"Carrier offers a limited protective service against freezing that depends on the availability of sufficient and proper equipment and the day of the week on which the shipment will move. Shipper must contact the local service center to establish in advance whether the service is available.\"",
+   "status": "Confirmed",
+   "link": "https://assets.ctfassets.net/kjv8gs2ccggb/3Y5vAsxznsXornATV1AG5D/6b84a348d1a24f4338f8f954633e28de/Saia_170D_10212024.pdf"
+  },
+  {
+   "row": 36,
+   "source": "Same ODFL Item 810",
+   "date": "eff. Apr 14, 2025",
+   "exact_words": "\"Shipper must state \"Protect From Freezing\", or words with a similar meaning on the first page of the bill of lading.\"",
+   "status": "Confirmed",
+   "link": "https://assets.ctfassets.net/kjv8gs2ccggb/3Y5vAsxznsXornATV1AG5D/6b84a348d1a24f4338f8f954633e28de/Saia_170D_10212024.pdf"
+  },
+  {
+   "row": 37,
+   "source": "Same Saia Item 810, condition C",
+   "date": "eff. Oct 21, 2024",
+   "exact_words": "\"Outside temperature is forecast to be 10 degrees Fahrenheit or higher\" (a condition Saia requires before it will provide the service)",
+   "status": "Confirmed",
+   "link": "https://assets.ctfassets.net/kjv8gs2ccggb/3Y5vAsxznsXornATV1AG5D/6b84a348d1a24f4338f8f954633e28de/Saia_170D_10212024.pdf"
+  },
+  {
+   "row": 38,
+   "source": "Same Saia Item 810",
+   "date": "eff. Oct 21, 2024",
+   "exact_words": "\"Protect from Freezing Service will be provided at Carrier's discretion on single-line shipments and shipments to Canada from October 1st through April 30th\"",
+   "status": "Confirmed",
+   "link": "https://assets.ctfassets.net/kjv8gs2ccggb/3Y5vAsxznsXornATV1AG5D/6b84a348d1a24f4338f8f954633e28de/Saia_170D_10212024.pdf"
+  },
+  {
+   "row": 39,
+   "source": "Same Saia Item 810, condition D",
+   "date": "eff. Oct 21, 2024",
+   "exact_words": "\"Shipment is tendered on one of the following days: Next Day Transit Lanes - Monday through Thursday. Second Day Transit Lanes - Monday through Wednesday. Third Day Transit Lanes - Monday and Tuesday\"",
+   "status": "Confirmed",
+   "link": "https://assets.ctfassets.net/kjv8gs2ccggb/3Y5vAsxznsXornATV1AG5D/6b84a348d1a24f4338f8f954633e28de/Saia_170D_10212024.pdf"
+  },
+  {
+   "row": 40,
+   "source": "Same Saia Item 810",
+   "date": "eff. Oct 21, 2024",
+   "exact_words": "\"Except as provided in this Item, Carrier is not liable for damage to freight caused by exposure to cold or freezing temperatures.\"",
+   "status": "Confirmed",
+   "link": "https://assets.ctfassets.net/kjv8gs2ccggb/3Y5vAsxznsXornATV1AG5D/6b84a348d1a24f4338f8f954633e28de/Saia_170D_10212024.pdf"
+  }
+ ],
+ "source_file": "sources/SOURCES.md"
+}
