@@ -330,7 +330,7 @@ export default function WinterPage() {
                 <Stat
                   tone="dark"
                   figure={`${fmtInt(H11.value)} of ${fmtInt(H1.value)}`}
-                  label={`cities have recorded a daily low below ${params.severe_tmin_f} °F in the last 10 winters`}
+                  label={`cities have recorded a daily low below ${SAIA_GATE_F} °F in the last 10 winters`}
                   source={
                     <>
                       NOAA GHCN-Daily · 15 cities · 10 winters each · ledger H11, n ={" "}
@@ -343,8 +343,10 @@ export default function WinterPage() {
                   {(params.rare_share_max * 100).toFixed(0)}% of winter days breaking the rule, yet at
                   least one day at or below {params.severe_tmin_f} °F. It returns{" "}
                   <strong>{fmtInt(H7.value)} cities</strong> — not because the cold is mild, but
-                  because the severity half passes <strong>everywhere</strong>. Houston comes closest
-                  to &ldquo;rare&rdquo; and still misses, at 5.4% of winter days.
+                  because no city is <em>rare</em> enough. Every one breaks the rule on more than{" "}
+                  {(params.rare_share_max * 100).toFixed(0)}% of winter days; Houston comes closest
+                  and still misses, at 5.4%. The severity half, meanwhile, passes{" "}
+                  <strong>everywhere</strong>.
                 </p>
                 <p className="mt-5 text-[0.9375rem] leading-relaxed text-white/80">
                   Plan by the worst week, not the average.
@@ -408,7 +410,7 @@ export default function WinterPage() {
 
                   <table className="mt-8 w-full border-collapse text-sm">
                     <caption className="source mb-2 text-left text-white/60">
-                      Days below {params.severe_tmin_f} °F per winter, now window
+                      Days below {SAIA_GATE_F} °F per winter, now window
                     </caption>
                     <thead>
                       <tr className="border-b border-white/25 text-left">
@@ -435,7 +437,7 @@ export default function WinterPage() {
                   </table>
                   <p className="source mt-3 text-white/55">
                     NOAA GHCN-Daily · 15 cities · 10 winters each ·{" "}
-                    {fmtInt(h("H11b_days_below_10f_total").value)} days below {params.severe_tmin_f} °F
+                    {fmtInt(h("H11b_days_below_10f_total").value)} days below {SAIA_GATE_F} °F
                     in total (ledger H11b)
                   </p>
                 </div>

@@ -3,7 +3,7 @@
 A desk brief on why carriers reject loads, and a winter load planning tool built on 10 winters of
 NOAA station records. Independent portfolio project by Sofia Mota.
 
-**Live site:** _(added once GitHub Pages is on)_
+**Live site:** https://sof17brasil-lab.github.io/desk-ready/
 
 ## What is here
 
@@ -93,3 +93,7 @@ public. Every money figure is industry-wide (ATRI), a published carrier tariff, 
 reader.
 
 Truck image: Sofia Mota. Photos: Unsplash.
+
+---
+
+Live: https://sof17brasil-lab.github.io/desk-ready/

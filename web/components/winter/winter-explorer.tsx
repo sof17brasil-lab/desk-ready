@@ -134,7 +134,10 @@ export function WinterExplorer({
                 dumbbell SVG's 640px min-width, pushing the whole page sideways. */}
             <div className="min-w-0">
               <p className="figure text-[clamp(3rem,7vw,5rem)] leading-[0.9]">
-                {Math.abs(median).toFixed(1)}
+                {/* For the headline product, show the ledger's own value. The
+                    browser recomputation lands on -7.449999…, which renders as
+                    7.4 next to a citation reading "ledger H2 = 7.5". */}
+                {Math.abs(isHeadline ? h2.value : median).toFixed(1)}
               </p>
               <p className="mt-3 max-w-[26ch] text-sm font-medium">
                 fewer days per winter that break the {product?.minSafeF} °F rule, median across

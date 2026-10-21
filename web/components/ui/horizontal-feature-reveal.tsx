@@ -15,7 +15,8 @@
  *    reveals, and the image parallax.
  */
 
-import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 interface TriggerRange {
   start?: string;
@@ -46,6 +47,15 @@ export default function HorizontalFeatureReveal({
   const uid = useId().replace(/:/g, "");
   const sectionId = `feature-reveal-${uid}`;
   const rootRef = useRef<HTMLElement>(null);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    const q = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(q.matches);
+    sync();
+    q.addEventListener("change", sync);
+    return () => q.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     const el = rootRef.current;
@@ -196,17 +206,29 @@ export default function HorizontalFeatureReveal({
     <section ref={rootRef} id={sectionId} className="relative z-10 w-full">
       {/* overflow-x clip only: `overflow: hidden` on both axes cropped the
           top of each card while its reveal animation was still running. */}
-      <div className="feature-viewport w-full [overflow-x:clip] [overflow-y:visible] max-[1025px]:!h-auto">
+      <div className={cn(
+          "feature-viewport w-full [overflow-x:clip] [overflow-y:visible] max-[1025px]:!h-auto",
+          reduced && "!h-auto [overflow-x:visible]",
+        )}>
         <div
-          className="feature-track flex h-full w-max items-center gap-(--card-gap) px-4 max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-12 max-[1025px]:py-4"
+          className={cn(
+            "feature-track flex h-full w-max items-center gap-(--card-gap) px-4 max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-12 max-[1025px]:py-4",
+            reduced && "h-auto w-full flex-col items-stretch gap-12 py-4",
+          )}
           style={{ "--card-gap": `${cardGap}vw` } as CSSProperties}
         >
           {cards.map((card, i) => (
             <article
               key={i}
-              className="feature-card flex max-h-full w-[72vw] shrink-0 items-center gap-[4vw] py-[4vh] max-[1025px]:max-h-none max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-[1025px]:py-0"
+              className={cn(
+                "feature-card flex max-h-full w-[72vw] shrink-0 items-center gap-[4vw] py-[4vh] max-[1025px]:max-h-none max-[1025px]:w-full max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-[1025px]:py-0",
+                reduced && "max-h-none w-full flex-col items-stretch gap-6 py-0",
+              )}
             >
-              <div className="h-full max-h-[min(62vh,34rem)] w-[32vw] shrink-0 self-center overflow-hidden bg-surface max-[1025px]:h-[56vw] max-[1025px]:max-h-none max-[1025px]:w-full">
+              <div className={cn(
+                "h-full max-h-[min(62vh,34rem)] w-[32vw] shrink-0 self-center overflow-hidden bg-surface max-[1025px]:h-[56vw] max-[1025px]:max-h-none max-[1025px]:w-full",
+                reduced && "h-[46vh] max-h-none w-full",
+              )}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={card.image}

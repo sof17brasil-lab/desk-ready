@@ -38,6 +38,9 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Fetch the NOAA station files
+        run: python pipeline/fetch_noaa.py
+
       - name: Run the pipeline and check the numbers ledger
         run: python pipeline/run_all.py
 

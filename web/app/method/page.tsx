@@ -226,7 +226,9 @@ export default function MethodPage() {
                       </a>
                     </th>
                     <td className="py-2 pr-4 whitespace-nowrap text-quiet">{r.date}</td>
-                    <td className="py-2 text-deep">{r.exact_words}</td>
+                    {/* `quoted` is the quoted span only; `exact_words` carries
+                        editorial notes meant for whoever built the site. */}
+                    <td className="py-2 text-deep">{r.quoted || r.exact_words}</td>
                   </tr>
                 ))}
             </tbody>

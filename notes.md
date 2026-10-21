@@ -242,6 +242,43 @@ canScrollPrev/Next disabled states.
 **p9 appears once on the winter page.** It now carries the hero, so the third "rule on the drum"
 card uses p7-cold-snap-street instead.
 
+## Pre-publish review (2026-10-21, fresh-eyes subagent)
+
+Twelve findings. Seven fixed, three left as Sofia's judgment, two are known and accepted.
+
+**Fixed**
+1. The winter page labelled H11 and H11b as "below 20 °F" in three places when both
+   metrics count days below **10 °F** (the Saia Item 810 gate). The section lede two
+   elements above correctly said 20 °F, so the page contradicted itself. `SAIA_GATE_F`
+   already existed and was not being used. Houston proves which series it is: coldest
+   13.1 °F, zero days below 10.
+2. **prefers-reduced-motion deleted content.** The horizontal reveal skipped GSAP on
+   reduced motion, but the stacked fallback was gated on viewport width alone, so a
+   reader on a window wider than 1025 px got a 236vw track inside `overflow-x: clip` —
+   no scrollbar, no scrolling, cards 02 and 03 unreachable. The layout now falls back on
+   the reduced-motion flag as well as width.
+3. "Rejected loads cost more as they \"increasing costs as rejected shipments move down
+   routing guides\"" was not a sentence. Reworded to "Rejected loads mean …".
+4. 78 / 90 / 94 were typed into three props on the home page, against data rule 8. They
+   are now parsed from brief_facts.json, so a change in SOURCES.md cannot leave them stale.
+5. The then-vs-now figure rendered 7.4 directly above a citation reading "ledger H2 = 7.5"
+   — the browser recomputation lands on −7.449999…. The headline product now shows the
+   ledger's own value.
+6. "It returns 0 cities … because the severity half passes everywhere" was backwards: the
+   result is zero because the **rare** half fails everywhere. Corrected on both pages.
+7. The method sources table printed raw SOURCES cells including notes to the builder
+   ("say so", "curly apostrophe on page"). It now renders the quoted span only.
+   Orphaned tank-truck.svg and truck-top-view.svg are no longer published.
+
+**Clean on review**: quotes (verified byte-for-byte both directions, apostrophes at hex
+level), the ledger (15/15 on value and sample size), forbidden claims, logos and the
+footer disclaimer, accessibility apart from the item above, reduced motion in the other
+five components, and phone layout at 390 px.
+
+**Left for Sofia**: the h1 reads "Uber Freight portfolio project" at hero scale with the
+disclaimer only in the footer; the word "save" appears once in the H12 assumptions on a
+page badged "not a savings claim"; the winter page is over the 1.5 MB rule uncompressed.
+
 ## Open questions
 - Ask Eden: does the Masterbuilders team plan winter protect-from-freeze loads, and how is it decided today?
 - Which destination cities matter most for that account? Swap the city list if Eden shares anything.

@@ -58,6 +58,14 @@ const carouselQuotes = [
   };
 });
 
+// Parsed from the verified facts rather than typed in, so these cannot drift
+// from SOURCES.md: the build already asserts each figure against its row.
+const ACCEPTANCE_NOW = Number(acceptanceNow.figure.replace(/[^0-9.]/g, ""));
+const [BAND_LOW, BAND_HIGH] = (acceptancePrior.figure.match(/\d+/g) ?? []).map(Number);
+if (!ACCEPTANCE_NOW || !BAND_LOW || !BAND_HIGH) {
+  throw new Error("Could not read the acceptance figures from brief_facts.json");
+}
+
 export default function HomePage() {
   return (
     <>
@@ -109,7 +117,7 @@ export default function HomePage() {
         <div className="mt-16 grid items-start gap-10 border-t border-line pt-12 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16">
           <div>
             <p className="text-[clamp(1.375rem,3vw,2.125rem)] leading-[1.25]">
-              <strong className="figure">78</strong> of every 100 loads were accepted by the first
+              <strong className="figure">{ACCEPTANCE_NOW}</strong> of every 100 loads were accepted by the first
               carrier asked (August 2026).
             </p>
             <p className="mt-5 max-w-[44ch] text-[0.9375rem] leading-relaxed text-deep">
@@ -121,7 +129,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <AcceptanceSquares now={78} bandLow={90} bandHigh={94} />
+          <AcceptanceSquares now={ACCEPTANCE_NOW} bandLow={BAND_LOW} bandHigh={BAND_HIGH} />
         </div>
 
       </Section>
@@ -136,7 +144,7 @@ export default function HomePage() {
             against={`vs ${acceptancePrior.figure}`}
             line={
               <>
-                Rejected loads cost more as they{" "}
+                Rejected loads mean{" "}
                 <em className="not-italic underline decoration-white/30 underline-offset-4">
                   &ldquo;{quote(23).quoted}&rdquo;
                 </em>
@@ -229,7 +237,7 @@ export default function HomePage() {
           lede="Your numbers, not ours. Nothing here is an Uber Freight figure."
         />
         <div className="mt-12">
-          <RejectionCalculator acceptanceNow={78} bandLow={90} bandHigh={94} />
+          <RejectionCalculator acceptanceNow={ACCEPTANCE_NOW} bandLow={BAND_LOW} bandHigh={BAND_HIGH} />
         </div>
       </Section>
 

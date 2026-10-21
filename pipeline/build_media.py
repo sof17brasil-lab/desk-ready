@@ -48,10 +48,10 @@ PHOTOS = [
 # Copied byte for byte: already optimised, or vector.
 # The truck intro was replaced by the scroll-driven blizzard, so the hero truck
 # images are no longer copied to the site. The originals stay in design/media/.
-VERBATIM = [
-    "tank-truck.svg",
-    "truck-top-view.svg",
-]
+# Nothing in the site references the two truck drawings since the blizzard
+# replaced the truck intro, so they are no longer published. The originals stay
+# in design/media/.
+VERBATIM: list[str] = []
 
 
 def convert(src: Path, dst: Path, max_edge: int = MAX_EDGE, max_kb: int = MAX_KB) -> str:

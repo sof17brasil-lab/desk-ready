@@ -6,7 +6,9 @@ web/out/
 *.tsbuildinfo
 .env*.local
 
-# NOAA raw files: large, public, re-downloadable. See data/README.md.
+# The NOAA raw files are public and ~22 MB, so they are fetched rather than
+# committed: pipeline/fetch_noaa.py gets them, and the deploy workflow runs it
+# before the pipeline so the SQL-vs-pandas ledger gate still runs in CI.
 data/raw/
 
 # Python
