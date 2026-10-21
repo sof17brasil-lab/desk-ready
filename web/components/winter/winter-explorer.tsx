@@ -45,7 +45,10 @@ export function WinterExplorer({
   grid: {
     stations: string[];
     weeks: number;
-    byProduct: Record<string, { risk: number[]; days: number[] }>;
+    fullWeekDays: number;
+    shortWeekDays: number;
+    /** Risk per mille (0-1000) per cell; -1 where there is no cell. */
+    byProduct: Record<string, number[]>;
   };
   cities: LaneCity[];
   heatCities: HeatCity[];
@@ -73,9 +76,14 @@ export function WinterExplorer({
     const out: HeatCell[] = [];
     for (let si = 0; si < grid.stations.length; si++) {
       for (let wi = 0; wi < grid.weeks; wi++) {
-        const i = si * grid.weeks + wi;
-        if (!g.days[i]) continue;
-        out.push({ s: grid.stations[si], w: wi + 1, r: g.risk[i], d: g.days[i] });
+        const v = g[si * grid.weeks + wi];
+        if (v < 0) continue;
+        out.push({
+          s: grid.stations[si],
+          w: wi + 1,
+          r: v / 1000,
+          d: wi + 1 === grid.weeks ? grid.shortWeekDays : grid.fullWeekDays,
+        });
       }
     }
     return out;

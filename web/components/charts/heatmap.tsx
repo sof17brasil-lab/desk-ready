@@ -180,7 +180,7 @@ export function HeatMap({
                       strokeWidth={heated ? 1.5 : 0.75}
                       tabIndex={0}
                       role="button"
-                      aria-label={`${c.city}, week ${w}, ${weekLabels[wi]}: ${(d.r * 100).toFixed(0)} percent of ${d.d} days break the rule. ${heated ? "Heat" : "Skip"}.`}
+                      aria-label={`${c.city} week ${w}: ${(d.r * 100).toFixed(0)}% of ${d.d} days. ${heated ? "Heat" : "Skip"}.`}
                       onMouseEnter={() => setHover(d)}
                       onMouseLeave={() => setHover(null)}
                       onFocus={() => setHover(d)}

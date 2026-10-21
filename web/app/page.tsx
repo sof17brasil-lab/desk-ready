@@ -73,6 +73,7 @@ export default function HomePage() {
           the statement revealed as the storm clears. */}
       <BlizzardIntro
         title="Uber Freight portfolio project"
+        disclaimer="Independent project. Not affiliated with Uber Freight."
         byline="Sofia Mota"
         statement="See why carriers say no"
       />

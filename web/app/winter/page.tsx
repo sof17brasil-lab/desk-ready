@@ -79,21 +79,37 @@ const gridStations = [...new Set(
   weeklyRisk.filter((r) => r.period === "now").map((r) => r.station_id),
 )].sort();
 
+// Risk ships as integers per mille (0-1000), not floats: "457" instead of
+// "0.4571" across ~3,000 cells. The day count is not shipped at all — every
+// week holds 70 station-days except the short final week, which holds 42 — so
+// it is derived on the client instead of repeating 3,000 more numbers.
+const FULL_WEEK_DAYS = 70;
+const SHORT_WEEK_DAYS = 42;
+
 const gridByProduct = Object.fromEntries(
   products.map((p) => {
-    const risk = new Array<number>(gridStations.length * WEEKS).fill(0);
-    const days = new Array<number>(gridStations.length * WEEKS).fill(0);
+    const risk = new Array<number>(gridStations.length * WEEKS).fill(-1);
     for (const r of weeklyRisk) {
       if (r.product_id !== p.product_id || r.period !== "now") continue;
       const si = gridStations.indexOf(r.station_id);
       if (si < 0) continue;
-      const i = si * WEEKS + (r.season_week - 1);
-      risk[i] = Math.round(r.risk_share * 1e4) / 1e4;
-      days[i] = r.n_days;
+      risk[si * WEEKS + (r.season_week - 1)] = Math.round(r.risk_share * 1000);
     }
-    return [p.product_id, { risk, days }];
+    return [p.product_id, risk];
   }),
 );
+
+// Guard the derivation above against the data changing underneath it.
+for (const r of weeklyRisk) {
+  if (r.period !== "now") continue;
+  const expected = r.season_week === WEEKS ? SHORT_WEEK_DAYS : FULL_WEEK_DAYS;
+  if (r.n_days !== expected) {
+    throw new Error(
+      `weekly_risk week ${r.season_week} has ${r.n_days} days, expected ${expected}. ` +
+        "The heat-map grid derives day counts instead of shipping them; update both.",
+    );
+  }
+}
 
 const nowStationIds = [...new Set(weeklyRisk.filter((r) => r.period === "now").map((r) => r.station_id))];
 
@@ -267,7 +283,13 @@ export default function WinterPage() {
       <WinterExplorer
         products={productOptions}
         dumbbellByProduct={dumbbellByProduct}
-        grid={{ stations: gridStations, weeks: WEEKS, byProduct: gridByProduct }}
+        grid={{
+          stations: gridStations,
+          weeks: WEEKS,
+          fullWeekDays: FULL_WEEK_DAYS,
+          shortWeekDays: SHORT_WEEK_DAYS,
+          byProduct: gridByProduct,
+        }}
         cities={laneCities}
         heatCities={heatCities}
         weekLabels={weekLabels}
@@ -484,7 +506,7 @@ export default function WinterPage() {
           {
             n: "01 · Before booking",
             title: "Before booking",
-            image: asset("/media/p1-winter-highway-truck.webp"),
+            image: asset("/media/p1-winter-highway-truck-card.webp"),
             checklist: [
               <>Run the load check (section 01) for origin, destination and ship week.</>,
               <>Book heated equipment early: 48 to 72 hours, 7 to 10 days for bulk.</>,

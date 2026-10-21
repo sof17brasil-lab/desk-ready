@@ -99,8 +99,8 @@ export function IllustrativeSaving({
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-2 h-px w-3 shrink-0 bg-mute" />
             The shipments are spread <strong>evenly across the city-weeks analysed</strong>. A real
-            lane mix is not even, and a network weighted towards Minneapolis or Denver would save
-            nothing here: those cities heat all 22 weeks.
+            lane mix is not even, and a network weighted towards Minneapolis or Denver would have
+            no shipments that would not need heat: those cities heat all 22 weeks.
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-2 h-px w-3 shrink-0 bg-mute" />

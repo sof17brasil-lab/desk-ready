@@ -30,6 +30,9 @@ import * as React from "react";
 
 interface BlizzardIntroProps {
   title: string;
+  /** Small grey line under the title; the site's independence is stated here
+   *  as well as in the footer, because the title names Uber Freight. */
+  disclaimer: string;
   byline: string;
   statement: string;
 }
@@ -42,7 +45,7 @@ function smoothstep(edge0: number, edge1: number, x: number) {
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-export function BlizzardIntro({ title, byline, statement }: BlizzardIntroProps) {
+export function BlizzardIntro({ title, disclaimer, byline, statement }: BlizzardIntroProps) {
   const sectionRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const progressRef = React.useRef(0);
@@ -294,6 +297,7 @@ export function BlizzardIntro({ title, byline, statement }: BlizzardIntroProps) 
       <>
         <section className="flex min-h-[70svh] flex-col items-center justify-center border-b border-line px-4 py-24">
           <h1 className="statement statement-hero max-w-[18ch] text-center">{title}</h1>
+          <p className="mt-5 text-sm text-quiet">{disclaimer}</p>
           <p className="mt-10 text-sm text-quiet">{byline}</p>
         </section>
         <section className="flex min-h-[50svh] items-center justify-center border-b border-line px-4 py-24">
@@ -319,6 +323,13 @@ export function BlizzardIntro({ title, byline, statement }: BlizzardIntroProps) 
           >
             {title}
           </motion.h1>
+
+          <motion.p
+            style={{ opacity: titleOpacity }}
+            className="mt-5 text-center text-sm text-quiet"
+          >
+            {disclaimer}
+          </motion.p>
 
           <motion.p
             style={{ opacity: statementOpacity, y: statementY }}
