@@ -5,7 +5,7 @@ import { AcceptanceSquares, DetentionGrid, OtriJumps } from "@/components/charts
 import { RejectionCalculator } from "@/components/calculators/rejection-calculator";
 import { QuoteCarousel } from "@/components/ui/testimonals-carousel";
 import { Section, SectionHead, Source, Stat } from "@/components/site/bits";
-import { OpeningSequence } from "@/components/ui/hero-section-3";
+import { BlizzardIntro } from "@/components/ui/blizzard-intro";
 import { StickyPanel } from "@/components/ui/smooth-scroll";
 import { fact, quote, type SourceRow } from "@/lib/data";
 import { asset } from "@/lib/utils";
@@ -61,15 +61,41 @@ const carouselQuotes = [
 export default function HomePage() {
   return (
     <>
-      {/* 1-3. The opening: title, the truck crossing it, then the statement. */}
-      <OpeningSequence
+      {/* 1-3. The opening: title, a blizzard that sweeps across it, then
+          the statement revealed as the storm clears. */}
+      <BlizzardIntro
         title="Uber Freight portfolio project"
         byline="Sofia Mota"
         statement="See why carriers say no"
-        imageUrl={asset("/media/hero-truck-branded.webp")}
-        fallbackImageUrl={asset("/media/hero-truck-unbranded.webp")}
-        imageAlt="Top view of a tractor-trailer"
       />
+
+      {/* Who this is, what it is, and what she wants to own. Placed directly
+          after the opening so a reader meets the ask before the analysis. */}
+      <section className="border-b border-line bg-surface px-4 py-14 sm:px-6 lg:px-10">
+        <div className="mx-auto grid max-w-[82rem] gap-8 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:items-end md:gap-16">
+          <div>
+            <p className="statement-sm">Sofia Mota</p>
+            <p className="mt-4 max-w-[52ch] text-[clamp(1.0625rem,1.6vw,1.25rem)] leading-[1.5]">
+              I am applying for the Logistics Specialist II role in Exton, Pennsylvania. This is an
+              independent project built entirely on public records: a desk brief on why carriers
+              reject loads, and a planning tool that says which winter loads need heat.
+            </p>
+            <p className="mt-4 max-w-[52ch] text-[0.9375rem] leading-relaxed text-deep">
+              What I would want to own: winter protect-from-freeze planning for the chemical
+              accounts — booking the right equipment before the cold week rather than during it.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3 md:justify-end">
+            <a href="mailto:sof17.brasil@gmail.com" className="btn btn-solid">
+              Contact Sofia
+            </a>
+            <Link href="/winter/" className="btn">
+              See the tool
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* The brief proper. */}
       <Section>
@@ -98,7 +124,6 @@ export default function HomePage() {
           <AcceptanceSquares now={78} bandLow={90} bandHigh={94} />
         </div>
 
-        <p className="source mt-12">Truck image: Sofia Mota</p>
       </Section>
 
       {/* 6. Four problem panels, each labelled THE PROBLEM / THE FIX. */}
@@ -200,8 +225,6 @@ export default function HomePage() {
       {/* Calculator. */}
       <Section id="calculator" tone="surface">
         <SectionHead
-          index={5}
-          total={6}
           title="What rejections cost your network"
           lede="Your numbers, not ours. Nothing here is an Uber Freight figure."
         />
@@ -212,7 +235,7 @@ export default function HomePage() {
 
       {/* 9. In their words, as a carousel. */}
       <Section>
-        <SectionHead index={6} total={6} title="In their words" />
+        <SectionHead title="In their words" />
         <div className="mt-12">
           <QuoteCarousel quotes={carouselQuotes} />
         </div>

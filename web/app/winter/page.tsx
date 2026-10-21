@@ -68,13 +68,31 @@ const dumbbellByProduct = Object.fromEntries(
 );
 
 // Heat-map cells: the now window, every eligible station.
-const cellsByProduct = Object.fromEntries(
-  products.map((p) => [
-    p.product_id,
-    weeklyRisk
-      .filter((r) => r.product_id === p.product_id && r.period === "now")
-      .map((r) => ({ s: r.station_id, w: r.season_week, r: r.risk_share, d: r.n_days })),
-  ]),
+//
+// Shipped as flat arrays indexed by stationIndex * 22 + (week - 1) rather than
+// 990 objects per product. The object form repeated the station id and four
+// keys on every cell and cost ~200 KB of HTML; this is the same data, expanded
+// once on the client. Risk is rounded to 4 dp, which is far finer than the
+// 0-100% the map can show.
+const WEEKS = SEASON_WEEKS;
+const gridStations = [...new Set(
+  weeklyRisk.filter((r) => r.period === "now").map((r) => r.station_id),
+)].sort();
+
+const gridByProduct = Object.fromEntries(
+  products.map((p) => {
+    const risk = new Array<number>(gridStations.length * WEEKS).fill(0);
+    const days = new Array<number>(gridStations.length * WEEKS).fill(0);
+    for (const r of weeklyRisk) {
+      if (r.product_id !== p.product_id || r.period !== "now") continue;
+      const si = gridStations.indexOf(r.station_id);
+      if (si < 0) continue;
+      const i = si * WEEKS + (r.season_week - 1);
+      risk[i] = Math.round(r.risk_share * 1e4) / 1e4;
+      days[i] = r.n_days;
+    }
+    return [p.product_id, { risk, days }];
+  }),
 );
 
 const nowStationIds = [...new Set(weeklyRisk.filter((r) => r.period === "now").map((r) => r.station_id))];
@@ -243,33 +261,13 @@ export default function WinterPage() {
         </div>
       </Section>
 
-      {/* 01 · The rule on the drum */}
-      <section id="rules" className="scroll-mt-20 border-y border-line bg-paper py-20 lg:py-28">
-        <div className="mx-auto mb-14 w-full max-w-[82rem] px-4 sm:px-6 lg:px-10">
-          <SectionHead
-            index={1}
-            total={6}
-            title="The rule on the drum"
-            lede="Three public product sheets, three different storage rules. The rule is printed on the sheet, not inferred."
-          />
-        </div>
-
-        <HorizontalFeatureReveal cards={featureCards} />
-
-        <div className="mx-auto mt-14 w-full max-w-[82rem] px-4 sm:px-6 lg:px-10">
-          <Quote row={quote(1)} className="max-w-[56ch]" />
-          <p className="source mt-5 max-w-[62ch]">
-            Rail and intermodal are part of the same picture but are not modelled here. These
-            products are named as public examples; no shipper relationship is implied.
-          </p>
-        </div>
-      </section>
+      {/* 02 renders inside WinterExplorer, after the tool. */}
 
       {/* 02, 03 and 05 share a product selector. */}
       <WinterExplorer
         products={productOptions}
         dumbbellByProduct={dumbbellByProduct}
-        cellsByProduct={cellsByProduct}
+        grid={{ stations: gridStations, weeks: WEEKS, byProduct: gridByProduct }}
         cities={laneCities}
         heatCities={heatCities}
         weekLabels={weekLabels}
@@ -288,10 +286,34 @@ export default function WinterPage() {
         climateQuote={<Quote row={quote(13)} />}
         // 04 · No lane is exempt. Passed in so the explorer renders it between
         // sections 03 and 05, keeping the numbered sections in reading order.
+        // 02 · The rule on the drum. Passed in so the explorer can render it
+        // between the tool and the then-vs-now chart.
+        rulesSection={
+          <section id="rules" className="scroll-mt-20 border-y border-line bg-paper py-20 lg:py-28">
+            <div className="mx-auto mb-14 w-full max-w-[82rem] px-4 sm:px-6 lg:px-10">
+              <SectionHead
+                index={2}
+                total={6}
+                title="The rule on the drum"
+                lede="Three public product sheets, three different storage rules. The rule is printed on the sheet, not inferred."
+              />
+            </div>
+
+            <HorizontalFeatureReveal cards={featureCards} />
+
+            <div className="mx-auto mt-14 w-full max-w-[82rem] px-4 sm:px-6 lg:px-10">
+              <Quote row={quote(1)} className="max-w-[56ch]" />
+              <p className="source mt-5 max-w-[62ch]">
+                Rail and intermodal are part of the same picture but are not modelled here. These
+                products are named as public examples; no shipper relationship is implied.
+              </p>
+            </div>
+          </section>
+        }
         noLaneExemptSection={
           <Section id="no-lane-exempt" tone="dark">
             <SectionHead
-              index={4}
+              index={5}
               total={6}
               tone="dark"
               title="No lane is exempt"
@@ -445,7 +467,7 @@ export default function WinterPage() {
 
       {/* 04 renders inside WinterExplorer, between 03 and 05. */}
 
-      {/* 05 renders inside WinterExplorer above. 06 below. */}
+      {/* 01, 02, 03, 04 and 05 all render inside WinterExplorer above. */}
       <Section id="playbook">
         <SectionHead
           index={6}
@@ -462,7 +484,7 @@ export default function WinterPage() {
             title: "Before booking",
             image: asset("/media/p1-winter-highway-truck.webp"),
             checklist: [
-              <>Run the load check (section 05) for origin, destination and ship week.</>,
+              <>Run the load check (section 01) for origin, destination and ship week.</>,
               <>Book heated equipment early: 48 to 72 hours, 7 to 10 days for bulk.</>,
               <>Write the minimum storage temperature on the order and BOL.</>,
             ],

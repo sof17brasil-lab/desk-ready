@@ -24,7 +24,7 @@ export interface ProductOption {
 export function WinterExplorer({
   products,
   dumbbellByProduct,
-  cellsByProduct,
+  grid,
   cities,
   heatCities,
   weekLabels,
@@ -37,10 +37,16 @@ export function WinterExplorer({
   h3,
   climateQuote,
   noLaneExemptSection,
+  rulesSection,
 }: {
   products: ProductOption[];
   dumbbellByProduct: Record<string, DumbbellRow[]>;
-  cellsByProduct: Record<string, HeatCell[]>;
+  /** Heat-map grid as flat arrays; expanded to cells once, on the client. */
+  grid: {
+    stations: string[];
+    weeks: number;
+    byProduct: Record<string, { risk: number[]; days: number[] }>;
+  };
   cities: LaneCity[];
   heatCities: HeatCity[];
   weekLabels: string[];
@@ -52,15 +58,28 @@ export function WinterExplorer({
   h2: { value: number; n: number };
   h3: { value: number; n: number };
   climateQuote: React.ReactNode;
-  /** Section 04, rendered here so the numbered sections stay in order. */
+  /** Sections rendered inside the explorer so the numbering reads in order. */
   noLaneExemptSection: React.ReactNode;
+  rulesSection: React.ReactNode;
 }) {
   const [productId, setProductId] = React.useState(headlineProductId);
   const [threshold, setThreshold] = React.useState(defaultThreshold);
 
   const product = products.find((p) => p.id === productId) ?? products[0];
   const rows = dumbbellByProduct[productId] ?? [];
-  const cells = cellsByProduct[productId] ?? [];
+  const cells = React.useMemo(() => {
+    const g = grid.byProduct[productId];
+    if (!g) return [] as HeatCell[];
+    const out: HeatCell[] = [];
+    for (let si = 0; si < grid.stations.length; si++) {
+      for (let wi = 0; wi < grid.weeks; wi++) {
+        const i = si * grid.weeks + wi;
+        if (!g.days[i]) continue;
+        out.push({ s: grid.stations[si], w: wi + 1, r: g.risk[i], d: g.days[i] });
+      }
+    }
+    return out;
+  }, [grid, productId]);
   const isHeadline = productId === headlineProductId;
 
   const median = React.useMemo(() => {
@@ -74,11 +93,36 @@ export function WinterExplorer({
 
   return (
     <>
-      {/* 02 · Warmer winters, same calendar */}
+      {/* 01 · Check a load — the tool leads, the evidence follows. */}
+      <section id="load-check" className="scroll-mt-20 bg-surface px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
+        <div className="mx-auto w-full max-w-[82rem]">
+          <SectionHead
+            index={1}
+            total={6}
+            title="Check a load"
+            lede="Pick a product, a lane and a ship week. The result reads the last 10 winters of recorded lows for those cities."
+          />
+          <div className="mt-12">
+            <LoadCheck
+              cells={cells}
+              cities={cities}
+              weekLabels={weekLabels}
+              products={products}
+              threshold={threshold}
+              tariffs={tariffs}
+              tariffGateF={tariffGateF}
+            />
+          </div>
+        </div>
+      </section>
+      {/* 02 · The rule on the drum */}
+      {rulesSection}
+
+      {/* 03 · Warmer winters, same calendar */}
       <section id="then-now" className="scroll-mt-20 bg-surface px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="mx-auto w-full max-w-[82rem]">
           <SectionHead
-            index={2}
+            index={3}
             total={6}
             title="Warmer winters, same calendar"
             lede="The only then-versus-now view on this site. Everything after it uses the last 10 winters."
@@ -139,11 +183,11 @@ export function WinterExplorer({
         </div>
       </section>
 
-      {/* 03 · Where heat can come off */}
+      {/* 04 · Where heat can come off */}
       <section id="heat-map" className="scroll-mt-20 px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="mx-auto w-full max-w-[82rem]">
           <SectionHead
-            index={3}
+            index={4}
             total={6}
             title="Where heat can come off"
             lede={
@@ -170,31 +214,9 @@ export function WinterExplorer({
         </div>
       </section>
 
-      {/* 04 renders here so the page reads 01, 02, 03, 04, 05, 06. */}
+      {/* 05 · No lane is exempt */}
       {noLaneExemptSection}
 
-      {/* 05 · Check a load */}
-      <section id="load-check" className="scroll-mt-20 bg-surface px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
-        <div className="mx-auto w-full max-w-[82rem]">
-          <SectionHead
-            index={5}
-            total={6}
-            title="Check a load"
-            lede="Pick a product, a lane and a ship week. The result reads the last 10 winters of recorded lows for those cities."
-          />
-          <div className="mt-12">
-            <LoadCheck
-              cells={cells}
-              cities={cities}
-              weekLabels={weekLabels}
-              products={products}
-              threshold={threshold}
-              tariffs={tariffs}
-              tariffGateF={tariffGateF}
-            />
-          </div>
-        </div>
-      </section>
     </>
   );
 }

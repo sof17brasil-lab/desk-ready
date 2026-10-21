@@ -374,7 +374,7 @@ export default function MethodPage() {
         <div id="credits" className="mt-16 scroll-mt-20 border-t border-white/20 pt-10">
           <h2 className="display display-md">Credits</h2>
           <p className="mt-4 max-w-[60ch] text-[0.9375rem] leading-relaxed text-white/75">
-            Truck image: Sofia Mota. Photos: Unsplash. Weather data: NOAA GHCN-Daily. Charges: Old
+            Photos: Unsplash. Weather data: NOAA GHCN-Daily. Charges: Old
             Dominion and Saia published rules tariffs. Reports: Uber Freight, ATRI, FreightWaves,
             Climate Central, each linked above.
           </p>

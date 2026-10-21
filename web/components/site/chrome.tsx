@@ -41,10 +41,14 @@ export function Nav() {
               {l.label}
             </Link>
           ))}
-          <a className="btn ml-2" href="#load-check-anchor" hidden aria-hidden="true">
-            placeholder
-          </a>
         </nav>
+
+        <a
+          href="mailto:sof17.brasil@gmail.com"
+          className="btn ml-2 hidden md:inline-flex"
+        >
+          Contact Sofia
+        </a>
 
         <button
           type="button"
@@ -143,7 +147,7 @@ export function Footer() {
           on each page.
         </p>
         <p className="mt-3 text-xs text-white/45">
-          Truck image: Sofia Mota. Photos: Unsplash.
+          Photos: Unsplash.
         </p>
       </div>
     </footer>

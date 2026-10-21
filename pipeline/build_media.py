@@ -19,10 +19,21 @@ OUT = ROOT / "web/public/media"
 MAX_EDGE = 1600
 MAX_KB = 200
 
-# Portrait photos never render taller than a card, so capping their long edge
-# lower keeps the compression quality high instead of spending pixels on height
-# the layout never uses.
-MAX_EDGE_OVERRIDE = {"p7-cold-snap-street.jpg": 1200}
+# Each photo is encoded for the box it actually renders in. The card images sit
+# in roughly 400-500 px slots, so shipping them at 1600 px was paying three
+# times over for pixels no one sees. Only the two full-bleed photos stay large.
+MAX_EDGE_OVERRIDE = {
+    "p9-closing-band-aerial-terminal.jpg": 1400,  # winter hero, full-bleed
+    "p1-winter-highway-truck.jpg": 1600,          # home winter band, full-bleed
+    "p2-steel-drums.jpg": 900,                    # reveal card
+    "p4-bulk-tank-trailer.jpg": 900,              # reveal card
+    "p7-cold-snap-street.jpg": 900,               # reveal card + playbook card
+    "p8-arrived-cold.jpg": 900,                   # playbook card
+}
+
+# The winter hero sits at 100% behind a dark gradient wash, so it tolerates
+# heavier compression than a photo being read directly.
+MAX_KB_OVERRIDE = {"p9-closing-band-aerial-terminal.jpg": 150}
 
 # Photos listed in design/MEDIA_LIST.md. Converted to WebP.
 PHOTOS = [
@@ -35,15 +46,15 @@ PHOTOS = [
 ]
 
 # Copied byte for byte: already optimised, or vector.
+# The truck intro was replaced by the scroll-driven blizzard, so the hero truck
+# images are no longer copied to the site. The originals stay in design/media/.
 VERBATIM = [
-    "hero-truck-branded.webp",
-    "hero-truck-unbranded.webp",
     "tank-truck.svg",
     "truck-top-view.svg",
 ]
 
 
-def convert(src: Path, dst: Path, max_edge: int = MAX_EDGE) -> str:
+def convert(src: Path, dst: Path, max_edge: int = MAX_EDGE, max_kb: int = MAX_KB) -> str:
     # design/MEDIA_LIST.md: every photo displays in black and white. Converting
     # for real (rather than only with a CSS filter) drops the chroma channels,
     # which buys a lot of quality inside the size budget and keeps the look even
@@ -57,10 +68,10 @@ def convert(src: Path, dst: Path, max_edge: int = MAX_EDGE) -> str:
     # Step quality down until the file fits the budget.
     for q in (82, 76, 70, 64, 58, 52, 46, 40):
         im.save(dst, "WEBP", quality=q, method=6)
-        if dst.stat().st_size <= MAX_KB * 1024:
+        if dst.stat().st_size <= max_kb * 1024:
             break
     kb = dst.stat().st_size / 1024
-    flag = "" if kb <= MAX_KB else "  OVER BUDGET"
+    flag = "" if kb <= max_kb else "  OVER BUDGET"
     return f"{dst.name:40} {im.size[0]}x{im.size[1]}  q={q}  {kb:6.1f} KB{flag}"
 
 
@@ -74,7 +85,8 @@ def main() -> int:
             missing.append(str(src.relative_to(ROOT)))
             continue
         line = convert(src, OUT / (Path(name).stem + ".webp"),
-                       MAX_EDGE_OVERRIDE.get(name, MAX_EDGE))
+                       MAX_EDGE_OVERRIDE.get(name, MAX_EDGE),
+                       MAX_KB_OVERRIDE.get(name, MAX_KB))
         if "OVER BUDGET" in line:
             over.append(line)
         print(line)

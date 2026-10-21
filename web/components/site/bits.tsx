@@ -16,8 +16,9 @@ export function SectionHead({
   id,
   tone = "light",
 }: {
-  index: number;
-  total: number;
+  /** Omit index/total to render the heading without a counter. */
+  index?: number;
+  total?: number;
   title: string;
   lede?: ReactNode;
   id?: string;
@@ -26,12 +27,14 @@ export function SectionHead({
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
     <header id={id} className="scroll-mt-24">
-      <div className="flex items-baseline justify-between gap-6 border-b border-current/15 pb-3">
-        <p className={cn("marker", tone === "dark" && "text-white/60")}>
-          {pad(index)} / {pad(total)}
-        </p>
-      </div>
-      <h2 className="display display-lg mt-6">{title}</h2>
+      {index !== undefined && total !== undefined && (
+        <div className="flex items-baseline justify-between gap-6 border-b border-current/15 pb-3">
+          <p className={cn("marker", tone === "dark" && "text-white/60")}>
+            {pad(index)} / {pad(total)}
+          </p>
+        </div>
+      )}
+      <h2 className={cn("display display-lg", index !== undefined && "mt-6")}>{title}</h2>
       {lede && <div className={cn("lede mt-4", tone === "dark" && "text-white/75")}>{lede}</div>}
     </header>
   );

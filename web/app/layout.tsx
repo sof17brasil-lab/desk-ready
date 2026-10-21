@@ -37,7 +37,9 @@ export const metadata: Metadata = {
     type: "website",
   },
   // No Uber or Uber Freight mark in the favicon or share image (CLAUDE.md).
-  icons: { icon: "/favicon.svg" },
+  // Next does not apply basePath to metadata icons, so it is added here; a bare
+  // "/favicon.svg" 404s on GitHub Pages, where the site lives under /desk-ready.
+  icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/favicon.svg` },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

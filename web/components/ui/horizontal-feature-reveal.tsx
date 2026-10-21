@@ -67,25 +67,10 @@ export default function HorizontalFeatureReveal({
       if (cancelled) return;
       gsap.registerPlugin(ScrollTrigger, SplitText);
 
-      // Measure only once the card images have loaded. Their height sets the
-      // track width, so building the pin before they decode gives ScrollTrigger
-      // a stale start and end and the section scrolls past without pinning.
-      await Promise.race([
-        Promise.all(
-          [...el.querySelectorAll("img")].map((img) =>
-            img.complete && img.naturalWidth > 0
-              ? Promise.resolve()
-              : new Promise<void>((r) => {
-                  img.addEventListener("load", () => r(), { once: true });
-                  img.addEventListener("error", () => r(), { once: true });
-                }),
-          ),
-        ),
-        // Never block setup indefinitely on a stalled image.
-        new Promise<void>((r) => setTimeout(r, 3000)),
-      ]);
-      if (cancelled) return;
-
+      // No waiting on images: the card boxes carry a fixed aspect ratio, so the
+      // track width — and therefore the pin distance — is known from CSS before
+      // anything decodes. An earlier version awaited image load, which deadlocked
+      // once the images went back to lazy.
       const ctx = gsap.context(() => {
         const track = el.querySelector<HTMLElement>(".feature-track");
         const viewport = el.querySelector<HTMLElement>(".feature-viewport");
@@ -227,9 +212,10 @@ export default function HorizontalFeatureReveal({
                   src={card.image}
                   alt={card.imageAlt}
                   className="feature-img photo h-full w-full object-cover"
-                  // Not lazy: the pin distance is measured from these, and an
-                  // off-screen lazy image never fires `load`.
-                  loading="eager"
+                  loading="lazy"
+                  decoding="async"
+                  width={1600}
+                  height={1200}
                 />
               </div>
 
